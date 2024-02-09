@@ -9,6 +9,11 @@ export default class Project {
         this.id = Project.ids++;
     }
 
+    update(project){
+        this.title = project.title;
+        this.description = project.description;
+    }
+
     addTodo = (todo) => {
         this.todos.set(todo.id, todo);
     }
