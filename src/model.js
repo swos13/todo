@@ -16,17 +16,22 @@ const model = (() => {
     const setCurrentProject = (project) => {
         currentProject = project;
     }
-    const updateProject = (project, updatedProject) => {
-        project.update(updatedProject);
+    const updateProject = (project, title, description) => {
+        project.setProperties(title, description);
     }
     const createTodo = (title, description, priority, dueDate) => {
         const todo = new Todo(title, description, priority, dueDate);
-        currentProject.addTodoToProject(todo);
+        currentProject.addTodo(todo);
+        return todo;
     }
-    const updateTodo = (todo, updatedTodo) => {
-        todo.update(updatedTodo);
+    const updateTodo = (todo, title, description, priority, dueDate) => {
+        todo.setProperties(title, description, priority, dueDate);
     }
-    const deleteTodoFromProject = (todo) => {
+    const deleteTodo = (todo) => {
         currentProject.removeTodo(todo);
     }
-})()
+    
+    return { createProject, setCurrentProject, updateProject, createTodo, updateTodo, deleteTodo }
+})();
+
+export default model;
