@@ -3,7 +3,7 @@ import Todo from './classes/Todo.js';
 
 //currentproject
 //add todo to project
-//get al ltodos from project
+//get all todos from project
 
 const model = (() => {
 
@@ -18,5 +18,15 @@ const model = (() => {
     }
     const updateProject = (project, updatedProject) => {
         project.update(updatedProject);
+    }
+    const createTodo = (title, description, priority, dueDate) => {
+        const todo = new Todo(title, description, priority, dueDate);
+        currentProject.addTodoToProject(todo);
+    }
+    const updateTodo = (todo, updatedTodo) => {
+        todo.update(updatedTodo);
+    }
+    const deleteTodoFromProject = (todo) => {
+        currentProject.removeTodo(todo);
     }
 })()
