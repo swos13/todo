@@ -4,6 +4,7 @@ export default class Todo {
 
     constructor(title, description, priority, dueDate){
         this.setProperties(title, description, priority, dueDate);
+        this.isCompleted = false;
         this.id = Todo.ids++;
     }
 
@@ -12,5 +13,13 @@ export default class Todo {
         this.description = description;
         this.priority = priority;
         this.dueDate = dueDate;
+    }
+
+    changeCompletion() {
+        if(this.isCompleted == false)
+            this.isCompleted = true;
+        else
+            this.isCompleted = false;
+        return this.isCompleted;
     }
 }
