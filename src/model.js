@@ -1,10 +1,6 @@
 import Project from './classes/Project.js';
 import Todo from './classes/Todo.js';
 
-//currentproject
-//add todo to project
-//get all todos from project
-
 const model = (() => {
 
     let currentProject;
@@ -38,8 +34,8 @@ const model = (() => {
     const updateTodo = (todo, title, description, priority, dueDate) => {
         todo.setProperties(title, description, priority, dueDate);
     }
-    const deleteTodo = (todo) => {
-        currentProject.removeTodo(todo);
+    const deleteTodo = (todoId) => {
+        currentProject.removeTodo(todoId);
     }
     
     return { createProject, updateProject, deleteProject, getProjects, getCurrentProject, setCurrentProject, createTodo, updateTodo, deleteTodo }
