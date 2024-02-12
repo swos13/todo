@@ -3,7 +3,7 @@ import Todo from './classes/Todo.js';
 
 const model = (() => {
 
-    let currentProject;
+    let currentProject = new Project("My Project","Description of My Project");
     const projects = new Map();
 
     const createProject = (title, description) => {

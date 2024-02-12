@@ -13,11 +13,11 @@ export default class Project {
         this.description = description;
     }
 
-    addTodo = (todo) => {
+    addTodo(todo){
         this.todos.set(todo.id, todo);
     }
 
-    removeTodo = (id) => {
+    removeTodo(id){
         this.todos.delete(id);
     }
 }
