@@ -3,10 +3,14 @@ export default class Project {
     static ids = 1; 
 
     constructor (title, description){
-        this.title = title;
-        this.description = description;
+        this.setProperties(title, description);
         this.todos = new Map();
         this.id = Project.ids++;
+    }
+
+    setProperties(title, description){
+        this.title = title;
+        this.description = description;
     }
 
     addTodo = (todo) => {
