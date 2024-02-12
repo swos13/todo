@@ -1,5 +1,6 @@
 import model from "./model.js";
 import view from "./view.js";
+import './style.css';
 
 const project = model.createProject("my project", "this is my project that I have to complete");
 model.setCurrentProject(project.id);

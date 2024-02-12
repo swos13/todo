@@ -1,0 +1,35 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+}
+
+.sidebar {
+    background-color: grey;
+    grid-column: 1 / 2;
+}
+
+.project-container {
+    grid-column: 2 / 3;
+    display: grid;
+    grid-template-rows: 1fr 5fr;
+}
+
+.project-header {
+    background-color: white;
+    grid-row: 1 / 2;
+}
+
+.todos-container {
+    background-color: rgb(175, 175, 175);
+    grid-row: 2 / 3;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.incompleted-todos, .completed-todos {
+    background-color: rgb(145, 145, 145);
+    margin: 24px;
+}
