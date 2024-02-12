@@ -1,6 +1,3 @@
-//create elements (whole page for project and todos and sidebar with other projects)
-//hold body and whole DOM structure???
-
 const view = (() => {
 
     const body = document.querySelector('body');
@@ -25,8 +22,28 @@ const view = (() => {
         projectDescription.classList.add('project-description');
         projectDescription.textContent = description;
 
+        const projectButtons = document.createElement('div');
+        projectButtons.classList.add('project-buttons-container');
+
+        const addTodoButton = document.createElement('button');
+        addTodoButton.classList.add('add-button');
+        addTodoButton.textContent = "Add todo";
+
+        const editProjectButton = document.createElement('button');
+        editProjectButton.classList.add('edit-project-button');
+        editProjectButton.textContent = "Edit";
+
+        const deleteProjectButton = document.createElement('button');
+        deleteProjectButton.classList.add('delete-project-button');
+        deleteProjectButton.textContent = "Delete";
+
+        projectButtons.appendChild(addTodoButton);
+        projectButtons.appendChild(editProjectButton);
+        projectButtons.appendChild(deleteProjectButton);
+
         header.appendChild(projectName);
         header.appendChild(projectDescription);
+        header.appendChild(projectButtons);
 
         return header;
     }
