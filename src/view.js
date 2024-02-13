@@ -21,6 +21,7 @@ const view = (() => {
         input.placeholder = placeholder;
 
         const inputRow = document.createElement('div');
+        inputRow.classList.add('dialog-row');
         appendChildren(inputRow, [label, input]);
         return [label, input, inputRow];
     }
@@ -44,16 +45,19 @@ const view = (() => {
         form.classList.add(`${className}-form`);
         form.method = 'dialog';
         dialog.append(dialogName);
-        return [dialog, form];
+        const buttons = document.createElement('div');
+        buttons.classList.add('dialog-buttons');
+        return [dialog, form, buttons];
     }
 
     const displayAddTodoDialog = () => {
-        const [dialog, form] = createDialogWithForm('Add Todo');
+        const [dialog, form, buttons] = createDialogWithForm('Add Todo');
         const [,, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
         const [,, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
         const [,, dateRow] = createInput('todo-due-date', 'date', 'due-date', '01/01/2030', 'Due date');
-        const priorityText = document.createElement('p');
+        const priorityText = document.createElement('div');
         priorityText.textContent = 'Priority:';
+        priorityText.classList.add('dialog-row');
         const [, lowPriorityInput, lowPriorityRow] = createInput('todo-low-priority', 'radio', 'priority', '', 'Low');
         const [, mediumPriorityInput, mediumPriorityRow] = createInput('todo-medium-priority', 'radio', 'priority', '', 'Medium');
         const [, highPriorityInput, highPriorityRow] = createInput('todo-high-priority', 'radio', 'priority', '', 'High');
@@ -64,8 +68,10 @@ const view = (() => {
 
         const addButton = document.createElement('button');
         addButton.textContent = 'Add';
+        addButton.classList.add('add-button');
         const cancelButton = document.createElement('button');
         cancelButton.textContent = 'Cancel';
+        cancelButton.classList.add('cancel-button');
 
         addButton.addEventListener('click', () => {
             dialog.close();
@@ -76,8 +82,9 @@ const view = (() => {
             dialog.close();
         });
 
+        appendChildren(buttons, [addButton, cancelButton]);
         appendChildren(form, [titleRow, descriptionRow, dateRow, priorityText, 
-                       lowPriorityRow, mediumPriorityRow, highPriorityRow, addButton, cancelButton]);
+                       lowPriorityRow, mediumPriorityRow, highPriorityRow, buttons]);
 
         dialog.appendChild(form);
         body.appendChild(dialog);
@@ -85,7 +92,7 @@ const view = (() => {
     }
 
     const displayEditProjectDialog = (title, description) => {
-        const [dialog, form] = createDialogWithForm('Edit Project');
+        const [dialog, form, buttons] = createDialogWithForm('Edit Project');
         const [,titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
         titleInput.value = title;
         const [,descriptionInput, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
@@ -93,8 +100,10 @@ const view = (() => {
 
         const saveButton = document.createElement('button');
         saveButton.textContent = 'Save';
+        saveButton.classList.add('save-button');
         const cancelButton = document.createElement('button');
         cancelButton.textContent = 'Cancel';
+        cancelButton.classList.add('cancel-button');
 
         saveButton.addEventListener('click', () => {
             dialog.close();
@@ -105,7 +114,8 @@ const view = (() => {
             dialog.close();
         });
 
-        appendChildren(form, [titleRow, descriptionRow, saveButton, cancelButton]);
+        appendChildren(buttons, [saveButton, cancelButton]);
+        appendChildren(form, [titleRow, descriptionRow, buttons]);
 
         dialog.appendChild(form);
         body.appendChild(dialog);
