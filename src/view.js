@@ -29,17 +29,26 @@ const view = (() => {
         children.forEach(child => parent.appendChild(child));
     }
 
-    const displayAddTodoDialog = () => {
+    const createDialogWithForm = (name) => {
+        const className = name.toLowerCase().replace(' ', '-');
         const dialog = document.createElement('dialog');
-        dialog.classList.add('.add-todo-dialog');
+        dialog.classList.add(`${className}-dialog`);
         dialog.addEventListener('close', () => {
             body.removeChild(dialog);
         });
 
+        const dialogName = document.createElement('div');
+        dialogName.textContent = name;
+        dialogName.classList.add('dialog-name');
         const form = document.createElement('form');
-        form.classList.add('add-todo-form');
+        form.classList.add(`${className}-form`);
         form.method = 'dialog';
+        dialog.append(dialogName);
+        return [dialog, form];
+    }
 
+    const displayAddTodoDialog = () => {
+        const [dialog, form] = createDialogWithForm('Add Todo');
         const [,, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
         const [,, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
         const [,, dateRow] = createInput('todo-due-date', 'date', 'due-date', '01/01/2030', 'Due date');
@@ -76,16 +85,7 @@ const view = (() => {
     }
 
     const displayEditProjectDialog = (title, description) => {
-        const dialog = document.createElement('dialog');
-        dialog.classList.add('.edit-project-dialog');
-        dialog.addEventListener('close', () => {
-            body.removeChild(dialog);
-        });
-
-        const form = document.createElement('form');
-        form.classList.add('edit-project-form');
-        form.method = 'dialog';
-
+        const [dialog, form] = createDialogWithForm('Edit Project');
         const [,titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
         titleInput.value = title;
         const [,descriptionInput, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
