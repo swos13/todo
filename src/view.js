@@ -10,6 +10,71 @@ const view = (() => {
         body.appendChild(createProject(name, description));
     }
 
+    const createInput = (id, type, name, placeholder, labelText) => {
+        const label = document.createElement('label');
+        label.for = id;
+        label.textContent = labelText;
+        const input = document.createElement('input');
+        input.id = id;
+        input.type = type;
+        input.name = name;
+        input.placeholder = placeholder;
+
+        const inputRow = document.createElement('div');
+        appendChildren(inputRow, [label, input]);
+        return [label, input, inputRow];
+    }
+
+    const appendChildren = (parent, children) => {
+        children.forEach(child => parent.appendChild(child));
+    }
+
+    const displayTodoDialog = () => {
+        const dialog = document.createElement('dialog');
+        dialog.classList.add('.todo-dialog');
+        dialog.addEventListener('close', () => {
+            body.removeChild(dialog);
+        });
+
+        const form = document.createElement('form');
+        form.classList.add('todo-form');
+        form.method = 'dialog';
+
+        const [,, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
+        const [,, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
+        const [,, dateRow] = createInput('todo-due-date', 'date', 'due-date', '01/01/2030', 'Due date');
+        const priorityText = document.createElement('p');
+        priorityText.textContent = 'Priority:';
+        const [, lowPriorityInput, lowPriorityRow] = createInput('todo-low-priority', 'radio', 'priority', '', 'Low');
+        const [, mediumPriorityInput, mediumPriorityRow] = createInput('todo-medium-priority', 'radio', 'priority', '', 'Medium');
+        const [, highPriorityInput, highPriorityRow] = createInput('todo-high-priority', 'radio', 'priority', '', 'High');
+
+        lowPriorityInput.value = 'low';
+        mediumPriorityInput.value = 'medium';
+        highPriorityInput.value = 'high';
+
+        const addButton = document.createElement('button');
+        addButton.textContent = 'Add';
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+
+        addButton.addEventListener('click', () => {
+            dialog.close();
+            //submit form
+        });
+
+        cancelButton.addEventListener('click', () => {
+            dialog.close();
+        });
+
+        appendChildren(form, [titleRow, descriptionRow, dateRow, priorityText, 
+                       lowPriorityRow, mediumPriorityRow, highPriorityRow, addButton, cancelButton]);
+
+        dialog.appendChild(form);
+        body.appendChild(dialog);
+        dialog.showModal();
+    }
+
     const createProjectHeader = (name, description) => {
         const header = document.createElement('div');
         header.classList.add('project-header');
@@ -28,6 +93,7 @@ const view = (() => {
         const addTodoButton = document.createElement('button');
         addTodoButton.classList.add('add-button');
         addTodoButton.textContent = "Add todo";
+        addTodoButton.addEventListener('click', displayTodoDialog);
 
         const editProjectButton = document.createElement('button');
         editProjectButton.classList.add('edit-project-button');
