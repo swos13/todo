@@ -29,15 +29,15 @@ const view = (() => {
         children.forEach(child => parent.appendChild(child));
     }
 
-    const displayTodoDialog = () => {
+    const displayAddTodoDialog = () => {
         const dialog = document.createElement('dialog');
-        dialog.classList.add('.todo-dialog');
+        dialog.classList.add('.add-todo-dialog');
         dialog.addEventListener('close', () => {
             body.removeChild(dialog);
         });
 
         const form = document.createElement('form');
-        form.classList.add('todo-form');
+        form.classList.add('add-todo-form');
         form.method = 'dialog';
 
         const [,, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
@@ -75,13 +75,50 @@ const view = (() => {
         dialog.showModal();
     }
 
-    const createProjectHeader = (name, description) => {
+    const displayEditProjectDialog = (title, description) => {
+        const dialog = document.createElement('dialog');
+        dialog.classList.add('.edit-project-dialog');
+        dialog.addEventListener('close', () => {
+            body.removeChild(dialog);
+        });
+
+        const form = document.createElement('form');
+        form.classList.add('edit-project-form');
+        form.method = 'dialog';
+
+        const [,titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
+        titleInput.value = title;
+        const [,descriptionInput, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
+        descriptionInput.value = description;
+
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Save';
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+
+        saveButton.addEventListener('click', () => {
+            dialog.close();
+            //submit form
+        });
+
+        cancelButton.addEventListener('click', () => {
+            dialog.close();
+        });
+
+        appendChildren(form, [titleRow, descriptionRow, saveButton, cancelButton]);
+
+        dialog.appendChild(form);
+        body.appendChild(dialog);
+        dialog.showModal();
+    }
+
+    const createProjectHeader = (title, description) => {
         const header = document.createElement('div');
         header.classList.add('project-header');
 
-        const projectName = document.createElement('div');
-        projectName.classList.add('project-name');
-        projectName.textContent = name;
+        const projectTitle = document.createElement('div');
+        projectTitle.classList.add('project-name');
+        projectTitle.textContent = title;
 
         const projectDescription = document.createElement('div');
         projectDescription.classList.add('project-description');
@@ -93,11 +130,14 @@ const view = (() => {
         const addTodoButton = document.createElement('button');
         addTodoButton.classList.add('add-button');
         addTodoButton.textContent = "Add todo";
-        addTodoButton.addEventListener('click', displayTodoDialog);
+        addTodoButton.addEventListener('click', displayAddTodoDialog);
 
         const editProjectButton = document.createElement('button');
         editProjectButton.classList.add('edit-project-button');
         editProjectButton.textContent = "Edit";
+        editProjectButton.addEventListener('click', () => {
+            displayEditProjectDialog(title, description);
+        });
 
         const deleteProjectButton = document.createElement('button');
         deleteProjectButton.classList.add('delete-project-button');
@@ -107,7 +147,7 @@ const view = (() => {
         projectButtons.appendChild(editProjectButton);
         projectButtons.appendChild(deleteProjectButton);
 
-        header.appendChild(projectName);
+        header.appendChild(projectTitle);
         header.appendChild(projectDescription);
         header.appendChild(projectButtons);
 
