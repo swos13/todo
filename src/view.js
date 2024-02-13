@@ -5,9 +5,7 @@ const view = (() => {
 
     const setUp = (name, description) => {
         sidebar.classList.add('sidebar');
-
-        body.appendChild(sidebar);
-        body.appendChild(createProject(name, description));
+        appendChildren(body, [sidebar, createProject(name, description)]);
     }
 
     const createInput = (id, type, name, placeholder, labelText) => {
@@ -153,13 +151,8 @@ const view = (() => {
         deleteProjectButton.classList.add('delete-project-button');
         deleteProjectButton.textContent = "Delete";
 
-        projectButtons.appendChild(addTodoButton);
-        projectButtons.appendChild(editProjectButton);
-        projectButtons.appendChild(deleteProjectButton);
-
-        header.appendChild(projectTitle);
-        header.appendChild(projectDescription);
-        header.appendChild(projectButtons);
+        appendChildren(projectButtons, [addTodoButton, editProjectButton, deleteProjectButton]);
+        appendChildren(header, [projectTitle, projectDescription, projectButtons]);
 
         return header;
     }
@@ -170,12 +163,10 @@ const view = (() => {
 
         const incompletedTodos = document.createElement('div');
         incompletedTodos.classList.add('incompleted-todos');
-
         const completedTodos = document.createElement('div');
         completedTodos.classList.add('completed-todos');
 
-        todos.appendChild(incompletedTodos);
-        todos.appendChild(completedTodos);
+        appendChildren(todos, [incompletedTodos, completedTodos]);
 
         return todos;
     }
@@ -183,9 +174,7 @@ const view = (() => {
     const createProject = (name, description) => {
         const contentContainer = document.createElement('div');
         contentContainer.classList.add('project-container');
-        contentContainer.appendChild(createProjectHeader(name, description));
-        contentContainer.appendChild(createTodosContainer());
-
+        appendChildren(contentContainer, [createProjectHeader(name, description), createTodosContainer()]);
         return contentContainer;
     }
 
