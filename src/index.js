@@ -8,3 +8,6 @@ const todo = model.createTodo("moje todo do zrobienia", "to jest moje todo, ktor
 console.log(todo);
 
 view.setUp(project.title, project.description);
+const todoCard = view.createTodoCard("moje todo do zrobienia", "to jest moje todo, ktore musze kiedys zrobic", "low", "2019-03-22", false);
+console.log();
+view.addTodoToContainer(todoCard, view.getIncompletedTodosContainer());

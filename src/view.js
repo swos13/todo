@@ -178,7 +178,50 @@ const view = (() => {
         return contentContainer;
     }
 
-    return { setUp, createProject }
+    const getCompletedTodosContainer = () => document.querySelector('.completed-todos');
+    const getIncompletedTodosContainer = () => document.querySelector('.incompleted-todos');
+
+    const createTodoCard = (title, description, priority, dueDate, isCompleted) => {
+        const card = document.createElement('div');
+        card.classList.add('todo-card');
+
+        const titleContainer = document.createElement('div');
+        titleContainer.classList.add('card-title');
+        titleContainer.textContent = title;
+
+        const descriptionContainer = document.createElement('div');
+        descriptionContainer.classList.add('card-description');
+        descriptionContainer.textContent = description;
+
+        const priorityContainer = document.createElement('div');
+        priorityContainer.classList.add('card-priority');
+        priorityContainer.textContent = `Priority: ${priority}`;
+
+        const dueDateContainer = document.createElement('div');
+        dueDateContainer.classList.add('card-due-date');
+        dueDateContainer.textContent = `Due: ${dueDate}`;
+
+        const buttons = document.createElement('div');
+        buttons.classList.add('card-buttons');
+
+        const completeButton = document.createElement('button');
+        completeButton.textContent = isCompleted == true ? "Complete" : "Completed!";
+        const editButton = document.createElement('button');
+        editButton.textContent = "Edit";
+
+        //TODO: add event listeners
+
+        appendChildren(buttons, [completeButton, editButton]);
+        appendChildren(card, [titleContainer, descriptionContainer, priorityContainer, dueDateContainer, buttons]);
+
+        return card;
+    }
+
+    const addTodoToContainer = (todoCard, container) => {
+        container.appendChild(todoCard);
+    }
+
+    return { setUp, createProject, getCompletedTodosContainer, getIncompletedTodosContainer, createTodoCard, addTodoToContainer }
 })();
 
 export default view;
