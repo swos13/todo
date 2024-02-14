@@ -55,7 +55,7 @@ const view = (() => {
 
     const displayAddTodoDialog = () => {
         const [dialog, form, buttons] = createDialogWithForm('Add Todo');
-        const [,, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
+        const [,titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
         const [,, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
         const [,, dateRow] = createInput('todo-due-date', 'date', 'date', '01/01/2030', 'Due date');
         const priorityText = document.createElement('div');
@@ -64,6 +64,8 @@ const view = (() => {
         const [, lowPriorityInput, lowPriorityRow] = createInput('todo-low-priority', 'radio', 'priority', '', 'Low');
         const [, mediumPriorityInput, mediumPriorityRow] = createInput('todo-medium-priority', 'radio', 'priority', '', 'Medium');
         const [, highPriorityInput, highPriorityRow] = createInput('todo-high-priority', 'radio', 'priority', '', 'High');
+
+        lowPriorityInput.checked = true;
 
         lowPriorityInput.value = 'low';
         mediumPriorityInput.value = 'medium';
@@ -76,9 +78,24 @@ const view = (() => {
         cancelButton.textContent = 'Cancel';
         cancelButton.classList.add('cancel-button');
 
-        addButton.addEventListener('click', () => {
-            dialog.close();
-            eventFunctions.get('add-todo')(form.title.value, form.description.value, form.priority.value, form.date.value);
+        const errorMessage = document.createElement('div');
+        errorMessage.textContent = "Title is required!";
+        errorMessage.classList.add('error');
+        errorMessage.style.visibility = 'hidden';
+
+        titleInput.addEventListener('change', () => {
+            errorMessage.style.visibility = 'hidden';
+        });
+
+        addButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            if(titleInput.value.trim() == ''){
+                errorMessage.style.visibility = 'visible';
+            }
+            else{
+                dialog.close();
+                eventFunctions.get('add-todo')(form.title.value, form.description.value, form.priority.value, form.date.value);
+            }
         });
 
         cancelButton.addEventListener('click', () => {
@@ -86,7 +103,7 @@ const view = (() => {
         });
 
         appendChildren(buttons, [addButton, cancelButton]);
-        appendChildren(form, [titleRow, descriptionRow, dateRow, priorityText, 
+        appendChildren(form, [titleRow, errorMessage, descriptionRow, dateRow, priorityText, 
                        lowPriorityRow, mediumPriorityRow, highPriorityRow, buttons]);
 
         dialog.appendChild(form);
@@ -190,14 +207,18 @@ const view = (() => {
         const card = document.createElement('div');
         card.classList.add('todo-card');
         card.id = id;
-
+        
         const titleContainer = document.createElement('div');
         titleContainer.classList.add('card-title');
         titleContainer.textContent = title;
 
+        
         const descriptionContainer = document.createElement('div');
         descriptionContainer.classList.add('card-description');
-        descriptionContainer.textContent = description;
+
+        if(description.trim() != ''){
+            descriptionContainer.textContent = description;
+        }
 
         const priorityContainer = document.createElement('div');
         priorityContainer.classList.add('card-priority');
@@ -205,7 +226,10 @@ const view = (() => {
 
         const dueDateContainer = document.createElement('div');
         dueDateContainer.classList.add('card-due-date');
-        dueDateContainer.textContent = `Due: ${dueDate}`;
+
+        if(dueDate.trim() != ''){
+            dueDateContainer.textContent = `Due: ${dueDate}`;
+        }
 
         const buttons = document.createElement('div');
         buttons.classList.add('card-buttons');

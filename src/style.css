@@ -34,6 +34,10 @@ body {
     margin: 24px;
 }
 
+.error {
+    color: red;
+}
+
 /*.project-buttons-container {
     display: flex;
 }
