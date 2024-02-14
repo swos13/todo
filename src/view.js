@@ -2,11 +2,16 @@ const view = (() => {
 
     const body = document.querySelector('body');
     const sidebar = document.createElement('div');
+    let eventFunctions = new Map();
 
     const setUp = (name, description) => {
         sidebar.classList.add('sidebar');
         appendChildren(body, [sidebar, createProject(name, description)]);
     }
+
+    const setEventFunctions = (functions) => {
+        eventFunctions = functions;
+    } 
 
     const createInput = (id, type, name, placeholder, labelText) => {
         const label = document.createElement('label');
@@ -52,7 +57,7 @@ const view = (() => {
         const [dialog, form, buttons] = createDialogWithForm('Add Todo');
         const [,, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
         const [,, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
-        const [,, dateRow] = createInput('todo-due-date', 'date', 'due-date', '01/01/2030', 'Due date');
+        const [,, dateRow] = createInput('todo-due-date', 'date', 'date', '01/01/2030', 'Due date');
         const priorityText = document.createElement('div');
         priorityText.textContent = 'Priority:';
         priorityText.classList.add('dialog-row');
@@ -73,7 +78,7 @@ const view = (() => {
 
         addButton.addEventListener('click', () => {
             dialog.close();
-            //submit form
+            eventFunctions.get('add-todo')(form.title.value, form.description.value, form.priority.value, form.date.value);
         });
 
         cancelButton.addEventListener('click', () => {
@@ -171,10 +176,10 @@ const view = (() => {
         return todos;
     }
 
-    const createProject = (name, description) => {
+    const createProject = (title, description) => {
         const contentContainer = document.createElement('div');
         contentContainer.classList.add('project-container');
-        appendChildren(contentContainer, [createProjectHeader(name, description), createTodosContainer()]);
+        appendChildren(contentContainer, [createProjectHeader(title, description), createTodosContainer()]);
         return contentContainer;
     }
 
@@ -206,7 +211,7 @@ const view = (() => {
         buttons.classList.add('card-buttons');
 
         const completeButton = document.createElement('button');
-        completeButton.textContent = isCompleted == true ? "Complete" : "Completed!";
+        completeButton.textContent = isCompleted == true ? "Completed!" : "Complete";
         const editButton = document.createElement('button');
         editButton.textContent = "Edit";
 
@@ -222,7 +227,7 @@ const view = (() => {
         container.appendChild(todoCard);
     }
 
-    return { setUp, createProject, getCompletedTodosContainer, getIncompletedTodosContainer, createTodoCard, addTodoToContainer }
+    return { setUp, setEventFunctions, createProject, getCompletedTodosContainer, getIncompletedTodosContainer, createTodoCard, addTodoToContainer }
 })();
 
 export default view;
