@@ -181,9 +181,10 @@ const view = (() => {
     const getCompletedTodosContainer = () => document.querySelector('.completed-todos');
     const getIncompletedTodosContainer = () => document.querySelector('.incompleted-todos');
 
-    const createTodoCard = (title, description, priority, dueDate, isCompleted) => {
+    const createTodoCard = (id, title, description, priority, dueDate, isCompleted) => {
         const card = document.createElement('div');
         card.classList.add('todo-card');
+        card.id = id;
 
         const titleContainer = document.createElement('div');
         titleContainer.classList.add('card-title');
