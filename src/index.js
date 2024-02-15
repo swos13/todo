@@ -8,7 +8,7 @@ const controller = (() => {
         view.setUp(project.title, project.description);
         setEventFunctions();
         const todo = model.createTodo("moje todo do zrobienia", "to jest moje todo, ktore musze kiedys zrobic", "low", "2019-03-22");
-        const todoCard = view.createTodoCard(todo.id, todo.title, todo.description, todo.priority, todo.dueDate, false);
+        const todoCard = view.createTodoCard(todo);
         view.addTodoToContainer(todoCard, view.getIncompletedTodosContainer());
     }
     const setEventFunctions = () => {
@@ -26,12 +26,14 @@ const controller = (() => {
     }
     const createTodo = (form) => {
         const todo = model.createTodo(form.title.value, form.description.value, form.priority.value, form.date.value);
-        const card = view.createTodoCard(todo.id, todo.title, todo.description, todo.priority, todo.dueDate, todo.isCompleted);
+        const card = view.createTodoCard(todo);
         const container = todo.isCompleted == false ? view.getIncompletedTodosContainer() : view.getCompletedTodosContainer();
         view.addTodoToContainer(card, container);
     }
-    const editTodo = () => {
-
+    const editTodo = (form) => {
+        view.updateTodo(form.id, form.title.value, form.description.value, form.priority.value, form.date.value);
+        model.updateTodo(model.getCurrentProject().todos.get(parseInt(form.id)), form.title.value, form.description.value, form.priority.value, form.date.value);
+        console.log(model.getCurrentProject().todos.get(parseInt(form.id)));
     }
     const createProject = () => {
 
@@ -39,7 +41,6 @@ const controller = (() => {
     const editProject = (form) => {
         view.updateProject(form.title.value, form.description.value);
         model.updateProject(model.getCurrentProject(), form.title.value, form.description.value);
-        console.log(model.getCurrentProject();
     }
     return { start }
 })();

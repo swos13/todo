@@ -127,7 +127,6 @@ const view = (() => {
         cancelButton.textContent = 'Cancel';
         cancelButton.classList.add('cancel-button');
 
-        
         addButton.addEventListener('click', (event) => {
             confirmDialog(event, form.title.value, dialog, errorMessage, 'add-todo', form);
         });
@@ -143,7 +142,7 @@ const view = (() => {
         dialog.showModal();
     }
 
-    const displayEditTodoDialog = (title, description, priority, dueDate) => {
+    const displayEditTodoDialog = (todo) => {
         const [dialog, form, buttons, errorMessage] = createTodoDialog('Edit Todo');
         const saveButton = document.createElement('button');
         saveButton.textContent = 'Save';
@@ -152,13 +151,15 @@ const view = (() => {
         cancelButton.textContent = 'Cancel';
         cancelButton.classList.add('cancel-button');
 
-        form.title.value = title;
-        form.description.value = description;
-        form.priority.value = priority;
-        form.date.value = dueDate;
+        form.title.value = todo.title;
+        form.description.value = todo.description;
+        form.priority.value = todo.priority;
+        form.date.value = todo.dueDate;
+        form.id = todo.id;
 
         saveButton.addEventListener('click', (event) => {
             confirmDialog(event, form.title.value , dialog, errorMessage, 'edit-todo', form);
+            
         });
 
         cancelButton.addEventListener('click', () => {
@@ -266,44 +267,44 @@ const view = (() => {
     const getCompletedTodosContainer = () => document.querySelector('.completed-todos');
     const getIncompletedTodosContainer = () => document.querySelector('.incompleted-todos');
 
-    const createTodoCard = (id, title, description, priority, dueDate, isCompleted) => {
+    const createTodoCard = (todo) => {
         const card = document.createElement('div');
         card.classList.add('todo-card');
-        card.id = id;
+        card.id = todo.id;
         
         const titleContainer = document.createElement('div');
         titleContainer.classList.add('card-title');
-        titleContainer.textContent = title;
+        titleContainer.textContent = todo.title;
 
         const descriptionContainer = document.createElement('div');
         descriptionContainer.classList.add('card-description');
 
-        if(description.trim() != ''){
-            descriptionContainer.textContent = description;
+        if(todo.description.trim() != ''){
+            descriptionContainer.textContent = todo.description;
         }
 
         const priorityContainer = document.createElement('div');
         priorityContainer.classList.add('card-priority');
-        priorityContainer.textContent = `Priority: ${priority}`;
+        priorityContainer.textContent = `Priority: ${todo.priority}`;
 
         const dueDateContainer = document.createElement('div');
         dueDateContainer.classList.add('card-due-date');
 
-        if(dueDate.trim() != ''){
-            dueDateContainer.textContent = `Due: ${dueDate}`;
+        if(todo.dueDate.trim() != ''){
+            dueDateContainer.textContent = `Due: ${todo.dueDate}`;
         }
 
         const buttons = document.createElement('div');
         buttons.classList.add('card-buttons');
 
         const completeButton = document.createElement('button');
-        completeButton.textContent = isCompleted == true ? "Completed!" : "Complete";
+        completeButton.textContent = todo.isCompleted == true ? "Completed!" : "Complete";
         const editButton = document.createElement('button');
         editButton.textContent = "Edit";
 
         //TODO: add event listeners
         editButton.addEventListener('click', () => {
-            displayEditTodoDialog(title, description, priority, dueDate);
+            displayEditTodoDialog(todo);
         });
 
         appendChildren(buttons, [completeButton, editButton]);
@@ -312,11 +313,20 @@ const view = (() => {
         return card;
     }
 
+    const updateTodo = (id, title, description, priority, dueDate) => {
+        document.querySelector(`.todo-card[id="${id}"] > .card-title`).textContent = title;
+        document.querySelector(`.todo-card[id="${id}"] > .card-description`).textContent = description;
+        document.querySelector(`.todo-card[id="${id}"] > .card-priority`).textContent = `Priority: ${priority}`;
+        const dueDateText = document.querySelector(`.todo-card[id="${id}"] > .card-due-date`);
+        dueDateText.textContent = dueDate != '' ? `Due: ${dueDate}` : '';
+        
+    }
+
     const addTodoToContainer = (todoCard, container) => {
         container.appendChild(todoCard);
     }
 
-    return { setUp, setEventFunctions, createProject, updateProject, getCompletedTodosContainer, getIncompletedTodosContainer, createTodoCard, addTodoToContainer }
+    return { setUp, setEventFunctions, createProject, updateProject, getCompletedTodosContainer, getIncompletedTodosContainer, createTodoCard, updateTodo, addTodoToContainer }
 })();
 
 export default view;
