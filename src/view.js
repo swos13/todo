@@ -302,6 +302,19 @@ const view = (() => {
         const editButton = document.createElement('button');
         editButton.textContent = "Edit";
 
+        completeButton.addEventListener('click', () => {
+            card.parentNode.removeChild(card);
+            if(todo.isCompleted == false){
+                addTodoToContainer(card, getCompletedTodosContainer());
+                completeButton.textContent = 'Completed!';
+            }
+            else{
+                addTodoToContainer(card, getIncompletedTodosContainer());
+                completeButton.textContent = 'Complete';
+            }
+            eventFunctions.get('change-todo-completion')(todo.id);
+        })
+
         //TODO: add event listeners
         editButton.addEventListener('click', () => {
             displayEditTodoDialog(todo);

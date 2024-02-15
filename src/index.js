@@ -15,6 +15,7 @@ const controller = (() => {
         const eventFunctions = new Map();
         eventFunctions.set('add-todo', createTodo);
         eventFunctions.set('edit-todo', editTodo);
+        eventFunctions.set('change-todo-completion', changeTodoCompletion);
         eventFunctions.set('add-project', createProject);
         eventFunctions.set('edit-project', editProject);
         view.setEventFunctions(eventFunctions);
@@ -41,6 +42,10 @@ const controller = (() => {
     const editProject = (form) => {
         view.updateProject(form.title.value, form.description.value);
         model.updateProject(model.getCurrentProject(), form.title.value, form.description.value);
+    }
+    const changeTodoCompletion = (id) => {
+        const todo = model.getCurrentProject().todos.get(id) ;
+        todo.isCompleted = todo.isCompleted == false ? true : false;
     }
     return { start }
 })();
