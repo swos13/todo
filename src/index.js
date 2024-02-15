@@ -24,9 +24,8 @@ const controller = (() => {
         model.setCurrentProject(project.id);
         return project;
     }
-    const createTodo = (title, description, priority, dueDate) => {
-        const todo = model.createTodo(title, description, priority, dueDate);
-        console.log(todo);
+    const createTodo = (form) => {
+        const todo = model.createTodo(form.title.value, form.description.value, form.priority.value, form.date.value);
         const card = view.createTodoCard(todo.id, todo.title, todo.description, todo.priority, todo.dueDate, todo.isCompleted);
         const container = todo.isCompleted == false ? view.getIncompletedTodosContainer() : view.getCompletedTodosContainer();
         view.addTodoToContainer(card, container);

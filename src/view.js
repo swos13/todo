@@ -9,6 +9,25 @@ const view = (() => {
         appendChildren(body, [sidebar, createProject(name, description)]);
     }
 
+    const getTitleError = () => {
+        const errorMessage = document.createElement('div');
+        errorMessage.textContent = "Title is required!";
+        errorMessage.classList.add('error');
+        errorMessage.style.visibility = 'hidden';
+        return errorMessage;
+    }
+
+    const confirmDialog = (event, titleValue, dialog, errorMessage, functionName, form) => {
+        event.preventDefault();
+            if(titleValue == ''){
+                errorMessage.style.visibility = 'visible';
+            }
+            else{
+                dialog.close();
+                eventFunctions.get(functionName)(form);
+            }
+    }
+
     const setEventFunctions = (functions) => {
         eventFunctions = functions;
     } 
@@ -78,24 +97,14 @@ const view = (() => {
         cancelButton.textContent = 'Cancel';
         cancelButton.classList.add('cancel-button');
 
-        const errorMessage = document.createElement('div');
-        errorMessage.textContent = "Title is required!";
-        errorMessage.classList.add('error');
-        errorMessage.style.visibility = 'hidden';
+        const errorMessage = getTitleError();
 
         titleInput.addEventListener('change', () => {
             errorMessage.style.visibility = 'hidden';
         });
 
-        addButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            if(titleInput.value.trim() == ''){
-                errorMessage.style.visibility = 'visible';
-            }
-            else{
-                dialog.close();
-                eventFunctions.get('add-todo')(form.title.value, form.description.value, form.priority.value, form.date.value);
-            }
+        addButton.addEventListener('click', (event) => {
+            confirmDialog(event, titleInput.value.trim(), dialog, errorMessage, 'add-todo', form);
         });
 
         cancelButton.addEventListener('click', () => {
@@ -125,9 +134,14 @@ const view = (() => {
         cancelButton.textContent = 'Cancel';
         cancelButton.classList.add('cancel-button');
 
-        saveButton.addEventListener('click', () => {
-            dialog.close();
-            //submit form
+        const errorMessage = getTitleError();
+
+        titleInput.addEventListener('change', () => {
+            errorMessage.style.visibility = 'hidden';
+        });
+
+        saveButton.addEventListener('click', (event) => {
+            confirmDialog(event, titleInput.value.trim(), dialog, errorMessage, 'edit-project', form);
         });
 
         cancelButton.addEventListener('click', () => {
@@ -135,7 +149,7 @@ const view = (() => {
         });
 
         appendChildren(buttons, [saveButton, cancelButton]);
-        appendChildren(form, [titleRow, descriptionRow, buttons]);
+        appendChildren(form, [titleRow, errorMessage, descriptionRow, buttons]);
 
         dialog.appendChild(form);
         body.appendChild(dialog);
