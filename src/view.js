@@ -72,12 +72,10 @@ const view = (() => {
         return [dialog, form, buttons];
     }
 
-    const createProjectDialog = (functionName, title, description) => {
+    const createProjectDialog = (functionName) => {
         const [dialog, form, buttons] = createDialogWithForm(functionName);
         const [,titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
-        titleInput.value = title;
-        const [,descriptionInput, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
-        descriptionInput.value = description;
+        const [, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
 
         const errorMessage = getTitleError();
 
@@ -89,11 +87,11 @@ const view = (() => {
         return [dialog, form, buttons, errorMessage];
     }
 
-    const createTodoDialog = (functionName, title, description, priority, dueDate) => {
+    const createTodoDialog = (functionName) => {
         const [dialog, form, buttons] = createDialogWithForm(functionName);
         const [, titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
-        const [, descriptionInput, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
-        const [, dateInput, dateRow] = createInput('todo-due-date', 'date', 'date', '01/01/2030', 'Due date');
+        const [,, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
+        const [,, dateRow] = createInput('todo-due-date', 'date', 'date', '01/01/2030', 'Due date:');
         const priorityText = document.createElement('div');
         priorityText.textContent = 'Priority:';
         priorityText.classList.add('dialog-row');
@@ -105,6 +103,8 @@ const view = (() => {
         mediumPriorityInput.value = 'medium';
         highPriorityInput.value = 'high';
 
+        lowPriorityInput.checked = true;
+
         const errorMessage = getTitleError();
 
         titleInput.addEventListener('change', () => {
@@ -114,17 +114,12 @@ const view = (() => {
         appendChildren(form, [titleRow, errorMessage, descriptionRow, dateRow, priorityText, 
             lowPriorityRow, mediumPriorityRow, highPriorityRow, buttons]);
 
-        titleInput.value = title;
-        descriptionInput.value = description;
-        dateInput.value = dueDate;
-        form.priority.value = priority;
-
 
         return [dialog, form, buttons, errorMessage];
     }
 
     const displayAddTodoDialog = () => {
-        const [dialog, form, buttons, errorMessage] = createTodoDialog('Add Todo', '', '', 'low', '');
+        const [dialog, form, buttons, errorMessage] = createTodoDialog('Add Todo');
         const addButton = document.createElement('button');
         addButton.textContent = 'Add';
         addButton.classList.add('add-button');
@@ -148,8 +143,40 @@ const view = (() => {
         dialog.showModal();
     }
 
+    const displayEditTodoDialog = (title, description, priority, dueDate) => {
+        const [dialog, form, buttons, errorMessage] = createTodoDialog('Edit Todo');
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Save';
+        saveButton.classList.add('save-button');
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.classList.add('cancel-button');
+
+        form.title.value = title;
+        form.description.value = description;
+        form.priority.value = priority;
+        form.date.value = dueDate;
+
+        saveButton.addEventListener('click', (event) => {
+            confirmDialog(event, form.title.value , dialog, errorMessage, 'edit-todo', form);
+        });
+
+        cancelButton.addEventListener('click', () => {
+            dialog.close();
+        });
+
+        appendChildren(buttons, [saveButton, cancelButton]);
+
+        dialog.appendChild(form);
+        body.appendChild(dialog);
+        dialog.showModal();
+    }
+
     const displayEditProjectDialog = (title, description) => {
         const [dialog, form, buttons, errorMessage] = createProjectDialog('Edit Project', title, description);
+
+        form.title.value = title;
+        form.description.value = description;
 
         const saveButton = document.createElement('button');
         saveButton.textContent = 'Save';
