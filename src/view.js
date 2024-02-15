@@ -72,11 +72,28 @@ const view = (() => {
         return [dialog, form, buttons];
     }
 
-    const displayAddTodoDialog = () => {
-        const [dialog, form, buttons] = createDialogWithForm('Add Todo');
+    const createProjectDialog = (functionName, title, description) => {
+        const [dialog, form, buttons] = createDialogWithForm(functionName);
         const [,titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
-        const [,, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
-        const [,, dateRow] = createInput('todo-due-date', 'date', 'date', '01/01/2030', 'Due date');
+        titleInput.value = title;
+        const [,descriptionInput, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
+        descriptionInput.value = description;
+
+        const errorMessage = getTitleError();
+
+        titleInput.addEventListener('change', () => {
+            errorMessage.style.visibility = 'hidden';
+        });
+        
+        appendChildren(form, [titleRow, errorMessage, descriptionRow, buttons]);
+        return [dialog, form, buttons, errorMessage];
+    }
+
+    const createTodoDialog = (functionName, title, description, priority, dueDate) => {
+        const [dialog, form, buttons] = createDialogWithForm(functionName);
+        const [, titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
+        const [, descriptionInput, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
+        const [, dateInput, dateRow] = createInput('todo-due-date', 'date', 'date', '01/01/2030', 'Due date');
         const priorityText = document.createElement('div');
         priorityText.textContent = 'Priority:';
         priorityText.classList.add('dialog-row');
@@ -84,18 +101,9 @@ const view = (() => {
         const [, mediumPriorityInput, mediumPriorityRow] = createInput('todo-medium-priority', 'radio', 'priority', '', 'Medium');
         const [, highPriorityInput, highPriorityRow] = createInput('todo-high-priority', 'radio', 'priority', '', 'High');
 
-        lowPriorityInput.checked = true;
-
         lowPriorityInput.value = 'low';
         mediumPriorityInput.value = 'medium';
         highPriorityInput.value = 'high';
-
-        const addButton = document.createElement('button');
-        addButton.textContent = 'Add';
-        addButton.classList.add('add-button');
-        const cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Cancel';
-        cancelButton.classList.add('cancel-button');
 
         const errorMessage = getTitleError();
 
@@ -103,8 +111,30 @@ const view = (() => {
             errorMessage.style.visibility = 'hidden';
         });
 
+        appendChildren(form, [titleRow, errorMessage, descriptionRow, dateRow, priorityText, 
+            lowPriorityRow, mediumPriorityRow, highPriorityRow, buttons]);
+
+        titleInput.value = title;
+        descriptionInput.value = description;
+        dateInput.value = dueDate;
+        form.priority.value = priority;
+
+
+        return [dialog, form, buttons, errorMessage];
+    }
+
+    const displayAddTodoDialog = () => {
+        const [dialog, form, buttons, errorMessage] = createTodoDialog('Add Todo', '', '', 'low', '');
+        const addButton = document.createElement('button');
+        addButton.textContent = 'Add';
+        addButton.classList.add('add-button');
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.classList.add('cancel-button');
+
+        
         addButton.addEventListener('click', (event) => {
-            confirmDialog(event, titleInput.value.trim(), dialog, errorMessage, 'add-todo', form);
+            confirmDialog(event, form.title.value, dialog, errorMessage, 'add-todo', form);
         });
 
         cancelButton.addEventListener('click', () => {
@@ -112,8 +142,6 @@ const view = (() => {
         });
 
         appendChildren(buttons, [addButton, cancelButton]);
-        appendChildren(form, [titleRow, errorMessage, descriptionRow, dateRow, priorityText, 
-                       lowPriorityRow, mediumPriorityRow, highPriorityRow, buttons]);
 
         dialog.appendChild(form);
         body.appendChild(dialog);
@@ -121,11 +149,7 @@ const view = (() => {
     }
 
     const displayEditProjectDialog = (title, description) => {
-        const [dialog, form, buttons] = createDialogWithForm('Edit Project');
-        const [,titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
-        titleInput.value = title;
-        const [,descriptionInput, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
-        descriptionInput.value = description;
+        const [dialog, form, buttons, errorMessage] = createProjectDialog('Edit Project', title, description);
 
         const saveButton = document.createElement('button');
         saveButton.textContent = 'Save';
@@ -134,14 +158,8 @@ const view = (() => {
         cancelButton.textContent = 'Cancel';
         cancelButton.classList.add('cancel-button');
 
-        const errorMessage = getTitleError();
-
-        titleInput.addEventListener('change', () => {
-            errorMessage.style.visibility = 'hidden';
-        });
-
         saveButton.addEventListener('click', (event) => {
-            confirmDialog(event, titleInput.value.trim(), dialog, errorMessage, 'edit-project', form);
+            confirmDialog(event, form.title.value , dialog, errorMessage, 'edit-project', form);
         });
 
         cancelButton.addEventListener('click', () => {
@@ -149,7 +167,6 @@ const view = (() => {
         });
 
         appendChildren(buttons, [saveButton, cancelButton]);
-        appendChildren(form, [titleRow, errorMessage, descriptionRow, buttons]);
 
         dialog.appendChild(form);
         body.appendChild(dialog);
@@ -231,7 +248,6 @@ const view = (() => {
         titleContainer.classList.add('card-title');
         titleContainer.textContent = title;
 
-        
         const descriptionContainer = document.createElement('div');
         descriptionContainer.classList.add('card-description');
 
@@ -259,6 +275,9 @@ const view = (() => {
         editButton.textContent = "Edit";
 
         //TODO: add event listeners
+        editButton.addEventListener('click', () => {
+            displayEditTodoDialog(title, description, priority, dueDate);
+        });
 
         appendChildren(buttons, [completeButton, editButton]);
         appendChildren(card, [titleContainer, descriptionContainer, priorityContainer, dueDateContainer, buttons]);
