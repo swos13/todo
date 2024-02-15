@@ -36,8 +36,9 @@ const controller = (() => {
     const createProject = () => {
 
     }
-    const editProject = () => {
-
+    const editProject = (form) => {
+        view.updateProject(form.title.value, form.description.value);
+        model.updateProject(model.getCurrentProject(), form.title.value, form.description.value);
     }
     return { start }
 })();

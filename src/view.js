@@ -214,6 +214,11 @@ const view = (() => {
         return contentContainer;
     }
 
+    const updateProject = (title, description) => {
+        document.querySelector('.project-name').textContent = title;
+        document.querySelector('.project-description').textContent = description;
+    }
+
     const getCompletedTodosContainer = () => document.querySelector('.completed-todos');
     const getIncompletedTodosContainer = () => document.querySelector('.incompleted-todos');
 
@@ -265,7 +270,7 @@ const view = (() => {
         container.appendChild(todoCard);
     }
 
-    return { setUp, setEventFunctions, createProject, getCompletedTodosContainer, getIncompletedTodosContainer, createTodoCard, addTodoToContainer }
+    return { setUp, setEventFunctions, createProject, updateProject, getCompletedTodosContainer, getIncompletedTodosContainer, createTodoCard, addTodoToContainer }
 })();
 
 export default view;
