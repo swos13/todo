@@ -180,7 +180,7 @@ const view = (() => {
         editProjectButton.classList.add('edit-project-button');
         editProjectButton.textContent = "Edit";
         editProjectButton.addEventListener('click', () => {
-            displayEditProjectDialog(title, description);
+            displayEditProjectDialog(projectTitle.textContent, projectDescription.textContent);
         });
 
         const deleteProjectButton = document.createElement('button');
