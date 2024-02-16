@@ -14,13 +14,13 @@ const view = (() => {
         const addProjectButton = document.createElement('button');
         addProjectButton.classList.add('add-project-button');
         addProjectButton.textContent = "Add project";
-        addProjectButton.addEventListener('click', displayAllProjects);
+        addProjectButton.addEventListener('click', displayAddProjectDialog);
 
         const allProjectsButton = document.createElement('button');
         allProjectsButton.classList.add('all-projects-button');
         allProjectsButton.textContent = "All projects";
         allProjectsButton.addEventListener('click', () => {
-            displayAddProjectDialog(projects);
+            displayAllProjects(projects);
         });
 
         const yourProjectsText = document.createElement('div');
@@ -155,8 +155,7 @@ const view = (() => {
         return [dialog, form, buttons, errorMessage];
     }
 
-    const displayAddTodoDialog = () => {
-        const [dialog, form, buttons, errorMessage] = createTodoDialog('Add Todo');
+    const createAddDialogElements = (dialog, form, buttons, errorMessage, functionName) => {
         const addButton = document.createElement('button');
         addButton.textContent = 'Add';
         addButton.classList.add('add-button');
@@ -165,7 +164,7 @@ const view = (() => {
         cancelButton.classList.add('cancel-button');
 
         addButton.addEventListener('click', (event) => {
-            confirmDialog(event, form.title.value, dialog, errorMessage, 'add-todo', form);
+            confirmDialog(event, form.title.value, dialog, errorMessage, functionName, form);
         });
 
         cancelButton.addEventListener('click', () => {
@@ -177,6 +176,11 @@ const view = (() => {
         dialog.appendChild(form);
         body.appendChild(dialog);
         dialog.showModal();
+    }
+
+    const displayAddTodoDialog = () => {
+        const [dialog, form, buttons, errorMessage] = createTodoDialog('Add Todo');
+        createAddDialogElements(dialog, form, buttons, errorMessage, 'add-todo');
     }
 
     const displayEditTodoDialog = (todo) => {
@@ -211,11 +215,13 @@ const view = (() => {
     }
 
     const displayAddProjectDialog = () => {
-
+        const [dialog, form, buttons, errorMessage] = createProjectDialog('Add Project');
+        createAddDialogElements(dialog, form, buttons, errorMessage, 'add-project');
+        
     }
 
     const displayEditProjectDialog = (title, description) => {
-        const [dialog, form, buttons, errorMessage] = createProjectDialog('Edit Project', title, description);
+        const [dialog, form, buttons, errorMessage] = createProjectDialog('Edit Project');
 
         form.title.value = title;
         form.description.value = description;
