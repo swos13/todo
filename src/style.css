@@ -11,6 +11,10 @@ body {
     grid-column: 1 / 2;
 }
 
+.sidebar-projects-container > .project-link {
+    display: block;
+}
+
 .project-container {
     grid-column: 2 / 3;
     display: grid;

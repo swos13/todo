@@ -37,8 +37,10 @@ const controller = (() => {
         model.updateTodo(model.getCurrentProject().todos.get(parseInt(form.id)), form.title.value, form.description.value, form.priority.value, form.date.value);
         console.log(model.getCurrentProject().todos.get(parseInt(form.id)));
     }
-    const createProject = () => {
-
+    const createProject = (form) => {
+        const newProject = model.createProject(form.title.value, form.description.value);
+        view.addProjectToContainer(newProject, view.getProjectsContainer());
+        console.log(model.getProjects());
     }
     const editProject = (form) => {
         view.updateProject(form.title.value, form.description.value);
