@@ -7,6 +7,11 @@ const view = (() => {
         appendChildren(body, [createSidebar(projects), createProject(name, description)]);
     }
 
+    const changeContent = (newContent) => {
+        body.removeChild(body.lastChild);
+        body.appendChild(newContent);
+    }
+
     const getProjectsContainer = () => document.querySelector('.sidebar-projects-container');
 
     const addProjectToContainer = (project, container) => {
@@ -390,7 +395,7 @@ const view = (() => {
         container.appendChild(todoCard);
     }
 
-    return { setUp, createSidebar, getProjectsContainer, addProjectToContainer,
+    return { setUp, createSidebar, getProjectsContainer, addProjectToContainer, changeContent,
             setEventFunctions, createProject, updateProject,
             getCompletedTodosContainer, getIncompletedTodosContainer,
             createTodoCard, updateTodo, addTodoToContainer }

@@ -47,7 +47,9 @@ const controller = (() => {
         model.updateProject(model.getCurrentProject(), form.title.value, form.description.value);
     }
     const setProject = (projectId) => {
-
+        model.setCurrentProject(projectId);
+        const newCurrentProject = model.getProjects().get(projectId);
+        view.changeContent(view.createProject(newCurrentProject.title, newCurrentProject.description));
     }
     const changeTodoCompletion = (id) => {
         const todo = model.getCurrentProject().todos.get(id) ;
