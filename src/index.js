@@ -5,7 +5,7 @@ import './style.css';
 const controller = (() => {
     const start = () => {
         const project = createDefaultProject();
-        view.setUp(project.title, project.description);
+        view.setUp(model.getProjects(), project.title, project.description);
         setEventFunctions();
         const todo = model.createTodo("moje todo do zrobienia", "to jest moje todo, ktore musze kiedys zrobic", "low", "2019-03-22");
         const todoCard = view.createTodoCard(todo);
@@ -18,6 +18,7 @@ const controller = (() => {
         eventFunctions.set('change-todo-completion', changeTodoCompletion);
         eventFunctions.set('add-project', createProject);
         eventFunctions.set('edit-project', editProject);
+        eventFunctions.set('set-project', setProject);
         view.setEventFunctions(eventFunctions);
     }
     const createDefaultProject = () => {
@@ -42,6 +43,9 @@ const controller = (() => {
     const editProject = (form) => {
         view.updateProject(form.title.value, form.description.value);
         model.updateProject(model.getCurrentProject(), form.title.value, form.description.value);
+    }
+    const setProject = (projectId) => {
+
     }
     const changeTodoCompletion = (id) => {
         const todo = model.getCurrentProject().todos.get(id) ;
