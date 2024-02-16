@@ -2,11 +2,35 @@ const view = (() => {
 
     const body = document.querySelector('body');
     const sidebar = document.createElement('div');
+    let eventFunctions = new Map();
 
     const setUp = (name, description) => {
         sidebar.classList.add('sidebar');
         appendChildren(body, [sidebar, createProject(name, description)]);
     }
+
+    const getTitleError = () => {
+        const errorMessage = document.createElement('div');
+        errorMessage.textContent = "Title is required!";
+        errorMessage.classList.add('error');
+        errorMessage.style.visibility = 'hidden';
+        return errorMessage;
+    }
+
+    const confirmDialog = (event, titleValue, dialog, errorMessage, functionName, form) => {
+        event.preventDefault();
+            if(titleValue == ''){
+                errorMessage.style.visibility = 'visible';
+            }
+            else{
+                dialog.close();
+                eventFunctions.get(functionName)(form);
+            }
+    }
+
+    const setEventFunctions = (functions) => {
+        eventFunctions = functions;
+    } 
 
     const createInput = (id, type, name, placeholder, labelText) => {
         const label = document.createElement('label');
@@ -48,11 +72,26 @@ const view = (() => {
         return [dialog, form, buttons];
     }
 
-    const displayAddTodoDialog = () => {
-        const [dialog, form, buttons] = createDialogWithForm('Add Todo');
-        const [,, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
+    const createProjectDialog = (functionName) => {
+        const [dialog, form, buttons] = createDialogWithForm(functionName);
+        const [,titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
+        const [, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
+
+        const errorMessage = getTitleError();
+
+        titleInput.addEventListener('change', () => {
+            errorMessage.style.visibility = 'hidden';
+        });
+        
+        appendChildren(form, [titleRow, errorMessage, descriptionRow, buttons]);
+        return [dialog, form, buttons, errorMessage];
+    }
+
+    const createTodoDialog = (functionName) => {
+        const [dialog, form, buttons] = createDialogWithForm(functionName);
+        const [, titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
         const [,, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
-        const [,, dateRow] = createInput('todo-due-date', 'date', 'due-date', '01/01/2030', 'Due date');
+        const [,, dateRow] = createInput('todo-due-date', 'date', 'date', '01/01/2030', 'Due date:');
         const priorityText = document.createElement('div');
         priorityText.textContent = 'Priority:';
         priorityText.classList.add('dialog-row');
@@ -64,6 +103,23 @@ const view = (() => {
         mediumPriorityInput.value = 'medium';
         highPriorityInput.value = 'high';
 
+        lowPriorityInput.checked = true;
+
+        const errorMessage = getTitleError();
+
+        titleInput.addEventListener('change', () => {
+            errorMessage.style.visibility = 'hidden';
+        });
+
+        appendChildren(form, [titleRow, errorMessage, descriptionRow, dateRow, priorityText, 
+            lowPriorityRow, mediumPriorityRow, highPriorityRow, buttons]);
+
+
+        return [dialog, form, buttons, errorMessage];
+    }
+
+    const displayAddTodoDialog = () => {
+        const [dialog, form, buttons, errorMessage] = createTodoDialog('Add Todo');
         const addButton = document.createElement('button');
         addButton.textContent = 'Add';
         addButton.classList.add('add-button');
@@ -71,9 +127,8 @@ const view = (() => {
         cancelButton.textContent = 'Cancel';
         cancelButton.classList.add('cancel-button');
 
-        addButton.addEventListener('click', () => {
-            dialog.close();
-            //submit form
+        addButton.addEventListener('click', (event) => {
+            confirmDialog(event, form.title.value, dialog, errorMessage, 'add-todo', form);
         });
 
         cancelButton.addEventListener('click', () => {
@@ -81,8 +136,37 @@ const view = (() => {
         });
 
         appendChildren(buttons, [addButton, cancelButton]);
-        appendChildren(form, [titleRow, descriptionRow, dateRow, priorityText, 
-                       lowPriorityRow, mediumPriorityRow, highPriorityRow, buttons]);
+
+        dialog.appendChild(form);
+        body.appendChild(dialog);
+        dialog.showModal();
+    }
+
+    const displayEditTodoDialog = (todo) => {
+        const [dialog, form, buttons, errorMessage] = createTodoDialog('Edit Todo');
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Save';
+        saveButton.classList.add('save-button');
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.classList.add('cancel-button');
+
+        form.title.value = todo.title;
+        form.description.value = todo.description;
+        form.priority.value = todo.priority;
+        form.date.value = todo.dueDate;
+        form.id = todo.id;
+
+        saveButton.addEventListener('click', (event) => {
+            confirmDialog(event, form.title.value , dialog, errorMessage, 'edit-todo', form);
+            
+        });
+
+        cancelButton.addEventListener('click', () => {
+            dialog.close();
+        });
+
+        appendChildren(buttons, [saveButton, cancelButton]);
 
         dialog.appendChild(form);
         body.appendChild(dialog);
@@ -90,11 +174,10 @@ const view = (() => {
     }
 
     const displayEditProjectDialog = (title, description) => {
-        const [dialog, form, buttons] = createDialogWithForm('Edit Project');
-        const [,titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
-        titleInput.value = title;
-        const [,descriptionInput, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
-        descriptionInput.value = description;
+        const [dialog, form, buttons, errorMessage] = createProjectDialog('Edit Project', title, description);
+
+        form.title.value = title;
+        form.description.value = description;
 
         const saveButton = document.createElement('button');
         saveButton.textContent = 'Save';
@@ -103,9 +186,8 @@ const view = (() => {
         cancelButton.textContent = 'Cancel';
         cancelButton.classList.add('cancel-button');
 
-        saveButton.addEventListener('click', () => {
-            dialog.close();
-            //submit form
+        saveButton.addEventListener('click', (event) => {
+            confirmDialog(event, form.title.value , dialog, errorMessage, 'edit-project', form);
         });
 
         cancelButton.addEventListener('click', () => {
@@ -113,7 +195,6 @@ const view = (() => {
         });
 
         appendChildren(buttons, [saveButton, cancelButton]);
-        appendChildren(form, [titleRow, descriptionRow, buttons]);
 
         dialog.appendChild(form);
         body.appendChild(dialog);
@@ -144,7 +225,7 @@ const view = (() => {
         editProjectButton.classList.add('edit-project-button');
         editProjectButton.textContent = "Edit";
         editProjectButton.addEventListener('click', () => {
-            displayEditProjectDialog(title, description);
+            displayEditProjectDialog(projectTitle.textContent, projectDescription.textContent);
         });
 
         const deleteProjectButton = document.createElement('button');
@@ -171,46 +252,73 @@ const view = (() => {
         return todos;
     }
 
-    const createProject = (name, description) => {
+    const createProject = (title, description) => {
         const contentContainer = document.createElement('div');
         contentContainer.classList.add('project-container');
-        appendChildren(contentContainer, [createProjectHeader(name, description), createTodosContainer()]);
+        appendChildren(contentContainer, [createProjectHeader(title, description), createTodosContainer()]);
         return contentContainer;
+    }
+
+    const updateProject = (title, description) => {
+        document.querySelector('.project-name').textContent = title;
+        document.querySelector('.project-description').textContent = description;
     }
 
     const getCompletedTodosContainer = () => document.querySelector('.completed-todos');
     const getIncompletedTodosContainer = () => document.querySelector('.incompleted-todos');
 
-    const createTodoCard = (id, title, description, priority, dueDate, isCompleted) => {
+    const createTodoCard = (todo) => {
         const card = document.createElement('div');
         card.classList.add('todo-card');
-        card.id = id;
-
+        card.id = todo.id;
+        
         const titleContainer = document.createElement('div');
         titleContainer.classList.add('card-title');
-        titleContainer.textContent = title;
+        titleContainer.textContent = todo.title;
 
         const descriptionContainer = document.createElement('div');
         descriptionContainer.classList.add('card-description');
-        descriptionContainer.textContent = description;
+
+        if(todo.description.trim() != ''){
+            descriptionContainer.textContent = todo.description;
+        }
 
         const priorityContainer = document.createElement('div');
         priorityContainer.classList.add('card-priority');
-        priorityContainer.textContent = `Priority: ${priority}`;
+        priorityContainer.textContent = `Priority: ${todo.priority}`;
 
         const dueDateContainer = document.createElement('div');
         dueDateContainer.classList.add('card-due-date');
-        dueDateContainer.textContent = `Due: ${dueDate}`;
+
+        if(todo.dueDate.trim() != ''){
+            dueDateContainer.textContent = `Due: ${todo.dueDate}`;
+        }
 
         const buttons = document.createElement('div');
         buttons.classList.add('card-buttons');
 
         const completeButton = document.createElement('button');
-        completeButton.textContent = isCompleted == true ? "Complete" : "Completed!";
+        completeButton.textContent = todo.isCompleted == true ? "Completed!" : "Complete";
         const editButton = document.createElement('button');
         editButton.textContent = "Edit";
 
+        completeButton.addEventListener('click', () => {
+            card.parentNode.removeChild(card);
+            if(todo.isCompleted == false){
+                addTodoToContainer(card, getCompletedTodosContainer());
+                completeButton.textContent = 'Completed!';
+            }
+            else{
+                addTodoToContainer(card, getIncompletedTodosContainer());
+                completeButton.textContent = 'Complete';
+            }
+            eventFunctions.get('change-todo-completion')(todo.id);
+        })
+
         //TODO: add event listeners
+        editButton.addEventListener('click', () => {
+            displayEditTodoDialog(todo);
+        });
 
         appendChildren(buttons, [completeButton, editButton]);
         appendChildren(card, [titleContainer, descriptionContainer, priorityContainer, dueDateContainer, buttons]);
@@ -218,11 +326,20 @@ const view = (() => {
         return card;
     }
 
+    const updateTodo = (id, title, description, priority, dueDate) => {
+        document.querySelector(`.todo-card[id="${id}"] > .card-title`).textContent = title;
+        document.querySelector(`.todo-card[id="${id}"] > .card-description`).textContent = description;
+        document.querySelector(`.todo-card[id="${id}"] > .card-priority`).textContent = `Priority: ${priority}`;
+        const dueDateText = document.querySelector(`.todo-card[id="${id}"] > .card-due-date`);
+        dueDateText.textContent = dueDate != '' ? `Due: ${dueDate}` : '';
+        
+    }
+
     const addTodoToContainer = (todoCard, container) => {
         container.appendChild(todoCard);
     }
 
-    return { setUp, createProject, getCompletedTodosContainer, getIncompletedTodosContainer, createTodoCard, addTodoToContainer }
+    return { setUp, setEventFunctions, createProject, updateProject, getCompletedTodosContainer, getIncompletedTodosContainer, createTodoCard, updateTodo, addTodoToContainer }
 })();
 
 export default view;
