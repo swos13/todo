@@ -26,11 +26,14 @@ const controller = (() => {
         model.setCurrentProject(project.id);
         return project;
     }
-    const createTodo = (form) => {
-        const todo = model.createTodo(form.title.value, form.description.value, form.priority.value, form.date.value);
+    const addTodoToView = (todo) => {
         const card = view.createTodoCard(todo);
         const container = todo.isCompleted == false ? view.getIncompletedTodosContainer() : view.getCompletedTodosContainer();
         view.addTodoToContainer(card, container);
+    }
+    const createTodo = (form) => {
+        const todo = model.createTodo(form.title.value, form.description.value, form.priority.value, form.date.value);
+        addTodoToView(todo);
     }
     const editTodo = (form) => {
         view.updateTodo(form.id, form.title.value, form.description.value, form.priority.value, form.date.value);
@@ -40,7 +43,6 @@ const controller = (() => {
     const createProject = (form) => {
         const newProject = model.createProject(form.title.value, form.description.value);
         view.addProjectToContainer(newProject, view.getProjectsContainer());
-        console.log(model.getProjects());
     }
     const editProject = (form) => {
         view.updateProject(form.title.value, form.description.value);
@@ -50,6 +52,9 @@ const controller = (() => {
         model.setCurrentProject(projectId);
         const newCurrentProject = model.getProjects().get(projectId);
         view.changeContent(view.createProject(newCurrentProject.title, newCurrentProject.description));
+        newCurrentProject.todos.forEach((todo) => {
+            addTodoToView(todo);
+        })
     }
     const changeTodoCompletion = (id) => {
         const todo = model.getCurrentProject().todos.get(id) ;
