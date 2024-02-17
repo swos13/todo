@@ -1,12 +1,60 @@
 const view = (() => {
 
     const body = document.querySelector('body');
-    const sidebar = document.createElement('div');
     let eventFunctions = new Map();
 
-    const setUp = (name, description) => {
+    const setUp = (projects, name, description) => {
+        appendChildren(body, [createSidebar(projects), createProject(name, description)]);
+    }
+
+    const changeContent = (newContent) => {
+        body.removeChild(body.lastChild);
+        body.appendChild(newContent);
+    }
+
+    const getProjectsContainer = () => document.querySelector('.sidebar-projects-container');
+
+    const addProjectToContainer = (project, container) => {
+        const projectName = document.createElement('a');
+        projectName.classList.add('project-link');
+        projectName.textContent = project.title;
+        projectName.addEventListener('click', () => {
+            eventFunctions.get('set-project')(project.id);
+        })
+        container.appendChild(projectName);
+    }
+
+    const createSidebar = (projects) => {
+        const sidebar = document.createElement('div');
         sidebar.classList.add('sidebar');
-        appendChildren(body, [sidebar, createProject(name, description)]);
+
+        const addProjectButton = document.createElement('button');
+        addProjectButton.classList.add('add-project-button');
+        addProjectButton.textContent = "Add project";
+        addProjectButton.addEventListener('click', displayAddProjectDialog);
+
+        const allProjectsButton = document.createElement('button');
+        allProjectsButton.classList.add('all-projects-button');
+        allProjectsButton.textContent = "All projects";
+        allProjectsButton.addEventListener('click', () => {
+            displayAllProjects(projects);
+        });
+
+        const yourProjectsText = document.createElement('div');
+        yourProjectsText.classList.add('your-projects');
+        yourProjectsText.textContent = "Your projects";
+
+        const projectsContainer = document.createElement('div');
+        projectsContainer.classList.add('sidebar-projects-container');
+
+        projects.forEach(project => addProjectToContainer(project, projectsContainer));
+
+        appendChildren(sidebar, [addProjectButton, allProjectsButton, yourProjectsText, projectsContainer]);
+        return sidebar;
+    }
+
+    const displayAllProjects = (projects) => {
+
     }
 
     const getTitleError = () => {
@@ -39,6 +87,7 @@ const view = (() => {
         const input = document.createElement('input');
         input.id = id;
         input.type = type;
+        if (type == 'text') input.value = '';
         input.name = name;
         input.placeholder = placeholder;
 
@@ -118,8 +167,7 @@ const view = (() => {
         return [dialog, form, buttons, errorMessage];
     }
 
-    const displayAddTodoDialog = () => {
-        const [dialog, form, buttons, errorMessage] = createTodoDialog('Add Todo');
+    const createAddDialogElements = (dialog, form, buttons, errorMessage, functionName) => {
         const addButton = document.createElement('button');
         addButton.textContent = 'Add';
         addButton.classList.add('add-button');
@@ -128,7 +176,7 @@ const view = (() => {
         cancelButton.classList.add('cancel-button');
 
         addButton.addEventListener('click', (event) => {
-            confirmDialog(event, form.title.value, dialog, errorMessage, 'add-todo', form);
+            confirmDialog(event, form.title.value, dialog, errorMessage, functionName, form);
         });
 
         cancelButton.addEventListener('click', () => {
@@ -140,6 +188,11 @@ const view = (() => {
         dialog.appendChild(form);
         body.appendChild(dialog);
         dialog.showModal();
+    }
+
+    const displayAddTodoDialog = () => {
+        const [dialog, form, buttons, errorMessage] = createTodoDialog('Add Todo');
+        createAddDialogElements(dialog, form, buttons, errorMessage, 'add-todo');
     }
 
     const displayEditTodoDialog = (todo) => {
@@ -173,8 +226,13 @@ const view = (() => {
         dialog.showModal();
     }
 
+    const displayAddProjectDialog = () => {
+        const [dialog, form, buttons, errorMessage] = createProjectDialog('Add Project');
+        createAddDialogElements(dialog, form, buttons, errorMessage, 'add-project');
+    }
+
     const displayEditProjectDialog = (title, description) => {
-        const [dialog, form, buttons, errorMessage] = createProjectDialog('Edit Project', title, description);
+        const [dialog, form, buttons, errorMessage] = createProjectDialog('Edit Project');
 
         form.title.value = title;
         form.description.value = description;
@@ -315,7 +373,6 @@ const view = (() => {
             eventFunctions.get('change-todo-completion')(todo.id);
         })
 
-        //TODO: add event listeners
         editButton.addEventListener('click', () => {
             displayEditTodoDialog(todo);
         });
@@ -339,7 +396,10 @@ const view = (() => {
         container.appendChild(todoCard);
     }
 
-    return { setUp, setEventFunctions, createProject, updateProject, getCompletedTodosContainer, getIncompletedTodosContainer, createTodoCard, updateTodo, addTodoToContainer }
+    return { setUp, createSidebar, getProjectsContainer, addProjectToContainer, changeContent,
+            setEventFunctions, createProject, updateProject,
+            getCompletedTodosContainer, getIncompletedTodosContainer,
+            createTodoCard, updateTodo, addTodoToContainer }
 })();
 
 export default view;
