@@ -52,7 +52,11 @@ const controller = (() => {
         model.setCurrentProject(projectId);
         const newCurrentProject = model.getProjects().get(projectId);
         view.changeContent(view.createProject(newCurrentProject.title, newCurrentProject.description));
-        newCurrentProject.todos.forEach((todo) => {
+        const sortedTodos = Array.from(newCurrentProject.todos, ([, todo]) => (todo)).sort((todoA, todoB) => {
+            return new Date(todoA.dueDate) - new Date(todoB.dueDate);
+        });
+        console.log(sortedTodos);
+        sortedTodos.forEach((todo) => {
             addTodoToView(todo);
         })
     }

@@ -87,6 +87,7 @@ const view = (() => {
         const input = document.createElement('input');
         input.id = id;
         input.type = type;
+        if (type == 'text') input.value = '';
         input.name = name;
         input.placeholder = placeholder;
 
