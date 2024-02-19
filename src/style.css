@@ -15,7 +15,7 @@ body {
     height: 100vh;
     margin: 0;
     display: grid;
-    grid-template-columns: 1fr 6fr;
+    grid-template-columns: minmax(200px, 1fr) 6fr;
 }
 
 .sidebar {
@@ -29,7 +29,7 @@ body {
 }
 
 .sidebar > * {
-    margin-left: 8px;
+    color: var(--white-color);
 }
 
 .sidebar > button {
@@ -51,11 +51,29 @@ body {
 }
 
 .sidebar > .your-projects {
-    font: 600 1rem Montserrat, Helvetica, sans-serif;
+    font: 700 1.5rem Montserrat, Helvetica, sans-serif;
+    padding-left: 24px;
+    padding-right: 24px;
+    margin-top: 24px;
+    margin-bottom: 16px;
+}
+
+.sidebar-projects-container {
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .sidebar-projects-container > .project-link {
     display: block;
+    font: 600 1.2rem Montserrat, Helvetica, sans-serif;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.project-link:hover {
+    color: var(--grey-color);
 }
 
 .project-container {
