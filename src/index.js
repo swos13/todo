@@ -9,7 +9,7 @@ const controller = (() => {
         setEventFunctions();
         const todo = model.createTodo("moje todo do zrobienia", "to jest moje todo, ktore musze kiedys zrobic", "low", "2019-03-22");
         const todoCard = view.createTodoCard(todo);
-        view.addTodoToContainer(todoCard, view.getIncompletedTodosContainer());
+        view.addTodoToContainer(todoCard, view.getTodosContainer());
     }
     const setEventFunctions = () => {
         const eventFunctions = new Map();
@@ -19,6 +19,7 @@ const controller = (() => {
         eventFunctions.set('add-project', createProject);
         eventFunctions.set('edit-project', editProject);
         eventFunctions.set('set-project', setProject);
+        eventFunctions.set('show-todos', showTodos);
         view.setEventFunctions(eventFunctions);
     }
     const createDefaultProject = () => {
@@ -28,7 +29,7 @@ const controller = (() => {
     }
     const addTodoToView = (todo) => {
         const card = view.createTodoCard(todo);
-        const container = todo.isCompleted == false ? view.getIncompletedTodosContainer() : view.getCompletedTodosContainer();
+        const container = view.getTodosContainer();
         view.addTodoToContainer(card, container);
     }
     const createTodo = (form) => {
@@ -55,7 +56,20 @@ const controller = (() => {
         const sortedTodos = Array.from(newCurrentProject.todos, ([, todo]) => (todo)).sort((todoA, todoB) => {
             return new Date(todoA.dueDate) - new Date(todoB.dueDate);
         });
-        console.log(sortedTodos);
+
+        sortedTodos.forEach((todo) => {
+            addTodoToView(todo);
+        })
+    }
+    const showTodos = (type) => {
+        const todosArray = Array.from(getCurrentProject().todos);
+        if(type == 'in-progress')
+            todosArray.filter((todo) => todo.isCompleted == false);
+        else if (type == 'completed')
+            todosArray.filter((todo) => todo.isCompleted == true);
+        const sortedTodos = Array.from(newCurrentProject.todos, ([, todo]) => (todo)).sort((todoA, todoB) => {
+            return new Date(todoA.dueDate) - new Date(todoB.dueDate);
+        });
         sortedTodos.forEach((todo) => {
             addTodoToView(todo);
         })

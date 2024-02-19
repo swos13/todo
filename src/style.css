@@ -30,10 +30,10 @@ body {
     background-color: rgb(175, 175, 175);
     grid-row: 2 / 3;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 64px 1fr;
 }
 
-.incompleted-todos, .completed-todos {
+.todos-cards {
     background-color: rgb(145, 145, 145);
     margin: 24px;
 }
