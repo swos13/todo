@@ -53,21 +53,17 @@ const controller = (() => {
         model.setCurrentProject(projectId);
         const newCurrentProject = model.getProjects().get(projectId);
         view.changeContent(view.createProject(newCurrentProject.title, newCurrentProject.description));
-        const sortedTodos = Array.from(newCurrentProject.todos, ([, todo]) => (todo)).sort((todoA, todoB) => {
-            return new Date(todoA.dueDate) - new Date(todoB.dueDate);
-        });
-
-        sortedTodos.forEach((todo) => {
-            addTodoToView(todo);
-        })
+        showTodos('in-progress');
     }
     const showTodos = (type) => {
-        const todosArray = Array.from(getCurrentProject().todos);
-        if(type == 'in-progress')
-            todosArray.filter((todo) => todo.isCompleted == false);
-        else if (type == 'completed')
-            todosArray.filter((todo) => todo.isCompleted == true);
-        const sortedTodos = Array.from(newCurrentProject.todos, ([, todo]) => (todo)).sort((todoA, todoB) => {
+        let todosArray = [];
+        model.getCurrentProject().todos.forEach((todo) => {
+            if(type == 'all' || 
+            (type == 'in-progress' && todo.isCompleted == false) || 
+            (type == 'completed' && todo.isCompleted == true))
+                todosArray.push(todo);
+        })
+        const sortedTodos = todosArray.sort((todoA, todoB) => {
             return new Date(todoA.dueDate) - new Date(todoB.dueDate);
         });
         sortedTodos.forEach((todo) => {

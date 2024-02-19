@@ -308,13 +308,40 @@ const view = (() => {
         inProgressButton.classList.add('in-progress-button');
         inProgressButton.textContent = 'In progress';
 
+        inProgressButton.addEventListener('click', () => {
+            clearTodosContainer();
+            inProgressButton.classList.add('active');
+            completedButton.classList.remove('active');
+            allButton.classList.remove('active');
+            todosCardsContainer.setAttribute('class', 'todos-cards in-progress');
+            eventFunctions.get('show-todos')('in-progress');
+        });
+
         const completedButton = document.createElement('button');
-        completedButton.classList.add('in-progress-button');
+        completedButton.classList.add('completed-button');
         completedButton.textContent = 'Completed';
 
+        completedButton.addEventListener('click', () => {
+            clearTodosContainer();
+            inProgressButton.classList.remove('active');
+            completedButton.classList.add('active');
+            allButton.classList.remove('active');
+            todosCardsContainer.setAttribute('class', 'todos-cards completed');
+            eventFunctions.get('show-todos')('completed');
+        });
+
         const allButton = document.createElement('button');
-        allButton.classList.add('in-progress-button');
+        allButton.classList.add('all-button');
         allButton.textContent = 'All';
+
+        allButton.addEventListener('click', () => {
+            clearTodosContainer();
+            inProgressButton.classList.remove('active');
+            completedButton.classList.remove('active');
+            allButton.classList.add('active');
+            todosCardsContainer.setAttribute('class', 'todos-cards all');
+            eventFunctions.get('show-todos')('all');
+        });
 
         appendChildren(buttons, [inProgressButton, completedButton, allButton])
 
@@ -407,6 +434,11 @@ const view = (() => {
 
     const addTodoToContainer = (todoCard, container) => {
         container.appendChild(todoCard);
+    }
+
+    const clearTodosContainer = () => {
+        while(todosCardsContainer.lastChild)
+            todosCardsContainer.removeChild(todosCardsContainer.lastChild);
     }
 
     return { setUp, createSidebar, getProjectsContainer, addProjectToContainer, changeContent,
