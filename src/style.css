@@ -3,17 +3,51 @@
     src: url('./fonts/Montserrat-VariableFont_wght.ttf');
 }
 
+:root {
+    --green-color: #62d86c;
+    --darker-green-color: #48a850;
+    --white-color: #f0f0f0;
+    --grey-color: #dadada;
+}
+
 body {
     width: 100vw;
     height: 100vh;
     margin: 0;
     display: grid;
-    grid-template-columns: 1fr 5fr;
+    grid-template-columns: 1fr 6fr;
 }
 
 .sidebar {
-    background-color: grey;
+    padding-top: 32px;
+    padding-bottom: 32px;
+    background-color: var(--green-color);
     grid-column: 1 / 2;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sidebar > * {
+    margin-left: 8px;
+}
+
+.sidebar > button {
+    align-self: center;
+    margin-left: 0px;
+    width: 80%;
+    font: 700 1.2rem Montserrat, Helvetica, sans-serif;
+    background-color: var(--green-color);
+    border: 2px solid;
+    border-color: var(--white-color);
+    border-radius: 8px;
+    color: var(--white-color);
+    padding: 0.5rem;
+}
+
+.sidebar > button:active {
+    background-color: var(--darker-green-color);
+    color: var(--grey-color);
 }
 
 .sidebar > .your-projects {
@@ -31,7 +65,7 @@ body {
 }
 
 .project-header {
-    background-color: white;
+    background-color: var(--white-color);
     grid-row: 1 / 2;
 }
 
