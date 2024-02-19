@@ -2,7 +2,7 @@ export default class Todo {
 
     static ids = 1;
 
-    constructor(title, description, priority, dueDate){
+    constructor(title, description = '', priority, dueDate){
         this.setProperties(title, description, priority, dueDate);
         this.isCompleted = false;
         this.id = Todo.ids++;

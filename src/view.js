@@ -2,6 +2,7 @@ const view = (() => {
 
     const body = document.querySelector('body');
     let eventFunctions = new Map();
+    let todosCardsContainer;
 
     const setUp = (projects, name, description) => {
         appendChildren(body, [createSidebar(projects), createProject(name, description)]);
@@ -300,12 +301,54 @@ const view = (() => {
         const todos = document.createElement('div');
         todos.classList.add('todos-container');
 
-        const incompletedTodos = document.createElement('div');
-        incompletedTodos.classList.add('incompleted-todos');
-        const completedTodos = document.createElement('div');
-        completedTodos.classList.add('completed-todos');
+        const buttons = document.createElement('div');
+        buttons.classList.add('todos-selection');
 
-        appendChildren(todos, [incompletedTodos, completedTodos]);
+        const inProgressButton = document.createElement('button');
+        inProgressButton.classList.add('in-progress-button');
+        inProgressButton.textContent = 'In progress';
+
+        inProgressButton.addEventListener('click', () => {
+            clearTodosContainer();
+            inProgressButton.classList.add('active');
+            completedButton.classList.remove('active');
+            allButton.classList.remove('active');
+            todosCardsContainer.setAttribute('class', 'todos-cards in-progress');
+            eventFunctions.get('show-todos')('in-progress');
+        });
+
+        const completedButton = document.createElement('button');
+        completedButton.classList.add('completed-button');
+        completedButton.textContent = 'Completed';
+
+        completedButton.addEventListener('click', () => {
+            clearTodosContainer();
+            inProgressButton.classList.remove('active');
+            completedButton.classList.add('active');
+            allButton.classList.remove('active');
+            todosCardsContainer.setAttribute('class', 'todos-cards completed');
+            eventFunctions.get('show-todos')('completed');
+        });
+
+        const allButton = document.createElement('button');
+        allButton.classList.add('all-button');
+        allButton.textContent = 'All';
+
+        allButton.addEventListener('click', () => {
+            clearTodosContainer();
+            inProgressButton.classList.remove('active');
+            completedButton.classList.remove('active');
+            allButton.classList.add('active');
+            todosCardsContainer.setAttribute('class', 'todos-cards all');
+            eventFunctions.get('show-todos')('all');
+        });
+
+        appendChildren(buttons, [inProgressButton, completedButton, allButton])
+
+        todosCardsContainer = document.createElement('div');
+        todosCardsContainer.setAttribute('class', 'todos-cards in-progress');
+
+        appendChildren(todos, [buttons, todosCardsContainer]);
 
         return todos;
     }
@@ -322,8 +365,7 @@ const view = (() => {
         document.querySelector('.project-description').textContent = description;
     }
 
-    const getCompletedTodosContainer = () => document.querySelector('.completed-todos');
-    const getIncompletedTodosContainer = () => document.querySelector('.incompleted-todos');
+    const getTodosContainer = () => todosCardsContainer;
 
     const createTodoCard = (todo) => {
         const card = document.createElement('div');
@@ -361,15 +403,14 @@ const view = (() => {
         editButton.textContent = "Edit";
 
         completeButton.addEventListener('click', () => {
-            card.parentNode.removeChild(card);
             if(todo.isCompleted == false){
-                addTodoToContainer(card, getCompletedTodosContainer());
                 completeButton.textContent = 'Completed!';
             }
             else{
-                addTodoToContainer(card, getIncompletedTodosContainer());
                 completeButton.textContent = 'Complete';
             }
+            if(!todosCardsContainer.classList.contains('all'))
+                todosCardsContainer.removeChild(card);
             eventFunctions.get('change-todo-completion')(todo.id);
         })
 
@@ -389,17 +430,21 @@ const view = (() => {
         document.querySelector(`.todo-card[id="${id}"] > .card-priority`).textContent = `Priority: ${priority}`;
         const dueDateText = document.querySelector(`.todo-card[id="${id}"] > .card-due-date`);
         dueDateText.textContent = dueDate != '' ? `Due: ${dueDate}` : '';
-        
     }
 
     const addTodoToContainer = (todoCard, container) => {
         container.appendChild(todoCard);
     }
 
+    const clearTodosContainer = () => {
+        while(todosCardsContainer.lastChild)
+            todosCardsContainer.removeChild(todosCardsContainer.lastChild);
+    }
+
     return { setUp, createSidebar, getProjectsContainer, addProjectToContainer, changeContent,
             setEventFunctions, createProject, updateProject,
-            getCompletedTodosContainer, getIncompletedTodosContainer,
-            createTodoCard, updateTodo, addTodoToContainer }
+            getTodosContainer, createTodoCard, 
+            updateTodo, addTodoToContainer }
 })();
 
 export default view;

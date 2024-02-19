@@ -9,7 +9,7 @@ const controller = (() => {
         setEventFunctions();
         const todo = model.createTodo("moje todo do zrobienia", "to jest moje todo, ktore musze kiedys zrobic", "low", "2019-03-22");
         const todoCard = view.createTodoCard(todo);
-        view.addTodoToContainer(todoCard, view.getIncompletedTodosContainer());
+        view.addTodoToContainer(todoCard, view.getTodosContainer());
     }
     const setEventFunctions = () => {
         const eventFunctions = new Map();
@@ -19,6 +19,7 @@ const controller = (() => {
         eventFunctions.set('add-project', createProject);
         eventFunctions.set('edit-project', editProject);
         eventFunctions.set('set-project', setProject);
+        eventFunctions.set('show-todos', showTodos);
         view.setEventFunctions(eventFunctions);
     }
     const createDefaultProject = () => {
@@ -28,7 +29,7 @@ const controller = (() => {
     }
     const addTodoToView = (todo) => {
         const card = view.createTodoCard(todo);
-        const container = todo.isCompleted == false ? view.getIncompletedTodosContainer() : view.getCompletedTodosContainer();
+        const container = view.getTodosContainer();
         view.addTodoToContainer(card, container);
     }
     const createTodo = (form) => {
@@ -52,10 +53,19 @@ const controller = (() => {
         model.setCurrentProject(projectId);
         const newCurrentProject = model.getProjects().get(projectId);
         view.changeContent(view.createProject(newCurrentProject.title, newCurrentProject.description));
-        const sortedTodos = Array.from(newCurrentProject.todos, ([, todo]) => (todo)).sort((todoA, todoB) => {
+        showTodos('in-progress');
+    }
+    const showTodos = (type) => {
+        let todosArray = [];
+        model.getCurrentProject().todos.forEach((todo) => {
+            if(type == 'all' || 
+            (type == 'in-progress' && todo.isCompleted == false) || 
+            (type == 'completed' && todo.isCompleted == true))
+                todosArray.push(todo);
+        })
+        const sortedTodos = todosArray.sort((todoA, todoB) => {
             return new Date(todoA.dueDate) - new Date(todoB.dueDate);
         });
-        console.log(sortedTodos);
         sortedTodos.forEach((todo) => {
             addTodoToView(todo);
         })
