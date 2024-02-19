@@ -81,13 +81,22 @@ const view = (() => {
         eventFunctions = functions;
     } 
 
+    const getInput = (type) => {
+        const input = document.createElement('input');
+        input.type = type;
+        return input;
+    }
+
+    const getTextArea = () => {
+        return document.createElement('textarea');
+    }
+
     const createInput = (id, type, name, placeholder, labelText) => {
         const label = document.createElement('label');
         label.for = id;
         label.textContent = labelText;
-        const input = document.createElement('input');
+        const input = name == 'description' ? getTextArea() : getInput(type);
         input.id = id;
-        input.type = type;
         if (type == 'text') input.value = '';
         input.name = name;
         input.placeholder = placeholder;
@@ -370,6 +379,7 @@ const view = (() => {
     const createTodoCard = (todo) => {
         const card = document.createElement('div');
         card.classList.add('todo-card');
+        card.classList.add('rolled');
         card.id = todo.id;
         
         const titleContainer = document.createElement('div');
@@ -402,7 +412,8 @@ const view = (() => {
         const editButton = document.createElement('button');
         editButton.textContent = "Edit";
 
-        completeButton.addEventListener('click', () => {
+        completeButton.addEventListener('click', (event) => {
+            event.stopPropagation()
             if(todo.isCompleted == false){
                 completeButton.textContent = 'Completed!';
             }
@@ -420,6 +431,21 @@ const view = (() => {
 
         appendChildren(buttons, [completeButton, editButton]);
         appendChildren(card, [titleContainer, descriptionContainer, priorityContainer, dueDateContainer, buttons]);
+
+        card.addEventListener('click', () => {
+            if(card.classList.contains('rolled')){
+                card.classList.remove('rolled');
+                card.classList.add('unrolled');
+                card.insertBefore(descriptionContainer, priorityContainer);
+                card.insertBefore(dueDateContainer, buttons);
+            }
+            else if(card.classList.contains('unrolled')){
+                card.classList.remove('unrolled');
+                card.classList.add('rolled');
+                card.removeChild(descriptionContainer);
+                card.removeChild(dueDateContainer);
+            }
+        });
 
         return card;
     }
