@@ -8,6 +8,7 @@
     --darker-green-color: #4fa356;
     --white-color: #e7e7e7;
     --grey-color: #cccccc;
+    --darker-grey-color: #6e6e6e;
     --violet-color: #8a60ce;
     --darker-violet-color: #664796;
     --yellow-color: #d1b537;
@@ -179,6 +180,7 @@ body {
 
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-auto-rows: 124px;
     gap: 16px;
 }
 
@@ -190,6 +192,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: 3px 3px 5px var(--darker-grey-color);
 }
 
 .todo-card.rolled {
@@ -197,7 +200,8 @@ body {
 }
 
 .todo-card.unrolled {
-    height: 200px;
+    position: relative;
+    height: 196px;
 }
 
 .todo-card > * {
