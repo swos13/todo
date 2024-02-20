@@ -4,12 +4,14 @@
 }
 
 :root {
-    --green-color: #62d86c;
-    --darker-green-color: #48a850;
-    --white-color: #f0f0f0;
-    --grey-color: #dadada;
-    --violet-color: #8557ce;
-    --darker-violet-color: #5f3d92;
+    --green-color: #64ca6d;
+    --darker-green-color: #4fa356;
+    --white-color: #e7e7e7;
+    --grey-color: #cccccc;
+    --violet-color: #8a60ce;
+    --darker-violet-color: #664796;
+    --yellow-color: #d1b537;
+    --red-color: #e03939;
 }
 
 body {
@@ -109,6 +111,7 @@ body {
 
 .project-buttons-container > button {
     font: 600 0.8rem Montserrat, Helvetica, sans-serif;
+    background-color: var(--white-color);
     width: 120px;
     padding: 0.5rem;
     border: 2px solid;
@@ -165,9 +168,58 @@ body {
 }
 
 .todos-cards {
-    background-color: rgb(145, 145, 145);
+    box-shadow: 3px 3px 3px;
+    background-color: var(--white-color);
+    border: 6px solid;
+    border-color: var(--white-color);
+    border-radius: 8px;
     margin: 24px;
     margin-top: 0;
+    padding: 24px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.todo-card {
+    border-left: 12px solid;
+    background-color: var(--grey-color);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+.todo-card.rolled {
+    height: 100px;
+}
+
+.todo-card.unrolled {
+    height: 200px;
+}
+
+.card-title {
+    font: 600 1rem Montserrat, Helvetica, sans-serif;
+    text-wrap: wrap;
+    overflow: auto;
+}
+
+.card-description {
+    overflow: auto;
+}
+
+.todo-card:has(.card-priority.low) {
+    border-color: var(--green-color);
+}
+
+.todo-card:has(.card-priority.medium) {
+    border-color: var(--yellow-color);
+}
+
+.todo-card:has(.card-priority.high) {
+    border-color: var(--red-color);
 }
 
 .error {

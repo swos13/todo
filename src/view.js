@@ -397,7 +397,7 @@ const view = (() => {
         }
 
         const priorityContainer = document.createElement('div');
-        priorityContainer.classList.add('card-priority');
+        priorityContainer.setAttribute('class', `card-priority ${todo.priority}`);
         priorityContainer.textContent = `Priority: ${todo.priority}`;
 
         const dueDateContainer = document.createElement('div');
@@ -433,7 +433,7 @@ const view = (() => {
         });
 
         appendChildren(buttons, [completeButton, editButton]);
-        appendChildren(card, [titleContainer, descriptionContainer, priorityContainer, dueDateContainer, buttons]);
+        appendChildren(card, [titleContainer, priorityContainer, buttons]);
 
         card.addEventListener('click', () => {
             if(card.classList.contains('rolled')){
@@ -456,7 +456,9 @@ const view = (() => {
     const updateTodo = (id, title, description, priority, dueDate) => {
         document.querySelector(`.todo-card[id="${id}"] > .card-title`).textContent = title;
         document.querySelector(`.todo-card[id="${id}"] > .card-description`).textContent = description;
-        document.querySelector(`.todo-card[id="${id}"] > .card-priority`).textContent = `Priority: ${priority}`;
+        const priorityContainer = document.querySelector(`.todo-card[id="${id}"] > .card-priority`);
+        priorityContainer.textContent = `Priority: ${priority}`;
+        priorityContainer.setAttribute('class', `card-priority ${priority}`);
         const dueDateText = document.querySelector(`.todo-card[id="${id}"] > .card-due-date`);
         dueDateText.textContent = dueDate != '' ? `Due: ${dueDate}` : '';
     }
