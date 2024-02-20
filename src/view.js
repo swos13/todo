@@ -72,8 +72,8 @@ const view = (() => {
                 errorMessage.style.visibility = 'visible';
             }
             else{
-                dialog.close();
                 eventFunctions.get(functionName)(form);
+                dialog.close();
             }
     }
 
@@ -416,7 +416,7 @@ const view = (() => {
         editButton.textContent = "Edit";
 
         completeButton.addEventListener('click', (event) => {
-            event.stopPropagation()
+            event.stopPropagation();
             if(todo.isCompleted == false){
                 completeButton.textContent = 'Completed!';
             }
@@ -428,25 +428,22 @@ const view = (() => {
             eventFunctions.get('change-todo-completion')(todo.id);
         })
 
-        editButton.addEventListener('click', () => {
+        editButton.addEventListener('click', (event) => {
             displayEditTodoDialog(todo);
+            event.stopPropagation();
         });
 
         appendChildren(buttons, [completeButton, editButton]);
-        appendChildren(card, [titleContainer, priorityContainer, buttons]);
+        appendChildren(card, [titleContainer, descriptionContainer, priorityContainer, dueDateContainer, buttons]);
 
         card.addEventListener('click', () => {
             if(card.classList.contains('rolled')){
                 card.classList.remove('rolled');
                 card.classList.add('unrolled');
-                card.insertBefore(descriptionContainer, priorityContainer);
-                card.insertBefore(dueDateContainer, buttons);
             }
             else if(card.classList.contains('unrolled')){
                 card.classList.remove('unrolled');
                 card.classList.add('rolled');
-                card.removeChild(descriptionContainer);
-                card.removeChild(dueDateContainer);
             }
         });
 

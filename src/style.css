@@ -222,6 +222,14 @@ body {
     border-color: var(--red-color);
 }
 
+.todo-card.rolled > .card-description, .todo-card.rolled > .card-due-date {
+    display: none;
+}
+
+.todo-card.unrolled > .card-description, .todo-card.unrolled > .card-due-date {
+    display: block;
+}
+
 .error {
     color: red;
 }
