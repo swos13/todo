@@ -315,6 +315,7 @@ const view = (() => {
 
         const inProgressButton = document.createElement('button');
         inProgressButton.classList.add('in-progress-button');
+        inProgressButton.classList.add('active');
         inProgressButton.textContent = 'In progress';
 
         inProgressButton.addEventListener('click', () => {
@@ -365,7 +366,9 @@ const view = (() => {
     const createProject = (title, description) => {
         const contentContainer = document.createElement('div');
         contentContainer.classList.add('project-container');
-        appendChildren(contentContainer, [createProjectHeader(title, description), createTodosContainer()]);
+        const gradient = document.createElement('div');
+        gradient.classList.add('gradient');
+        appendChildren(contentContainer, [createProjectHeader(title, description), gradient, createTodosContainer()]);
         return contentContainer;
     }
 

@@ -8,6 +8,8 @@
     --darker-green-color: #48a850;
     --white-color: #f0f0f0;
     --grey-color: #dadada;
+    --violet-color: #8557ce;
+    --darker-violet-color: #5f3d92;
 }
 
 body {
@@ -79,7 +81,7 @@ body {
 .project-container {
     grid-column: 2 / 3;
     display: grid;
-    grid-template-rows: 1fr 3fr;
+    grid-template-rows: 1fr 64px 3fr;
 }
 
 .project-header {
@@ -106,7 +108,7 @@ body {
 }
 
 .project-buttons-container > button {
-    font: 500 0.8rem Montserrat, Helvetica, sans-serif;
+    font: 600 0.8rem Montserrat, Helvetica, sans-serif;
     width: 120px;
     padding: 0.5rem;
     border: 2px solid;
@@ -119,16 +121,53 @@ body {
     background-color: var(--grey-color);
 }
 
+.gradient {
+    background-image: linear-gradient(var(--white-color), var(--violet-color));
+}
+
 .todos-container {
-    background-color: rgb(175, 175, 175);
-    grid-row: 2 / 3;
+    background-color: var(--violet-color);
+    grid-row: 3 / 4;
     display: grid;
     grid-template-rows: 64px 1fr;
+    gap: 24px;
+}
+
+.todos-selection {
+    place-self: center;
+    margin-top: 24px;
+}
+
+.todos-selection > button {
+    color: var(--white-color);
+    font: 700 0.8rem Montserrat, Helvetica, sans-serif;
+    width: 140px;
+    padding: 0.5rem;
+    background-color: var(--violet-color);
+    border: 2px solid;
+    border-color: var(--white-color);
+}
+
+.todos-selection > button:nth-of-type(1) {
+    border-top-left-radius: 24px;
+    border-bottom-left-radius: 24px;
+    border-right: 2px;
+}
+
+.todos-selection > button:nth-of-type(3) {
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    border-left: 2px;
+}
+
+.in-progress-button.active, .completed-button.active, .all-button.active {
+    background-color: var(--darker-violet-color);
 }
 
 .todos-cards {
     background-color: rgb(145, 145, 145);
     margin: 24px;
+    margin-top: 0;
 }
 
 .error {
