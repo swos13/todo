@@ -72,8 +72,8 @@ const view = (() => {
                 errorMessage.style.visibility = 'visible';
             }
             else{
-                dialog.close();
                 eventFunctions.get(functionName)(form);
+                dialog.close();
             }
     }
 
@@ -88,7 +88,9 @@ const view = (() => {
     }
 
     const getTextArea = () => {
-        return document.createElement('textarea');
+        const textarea = document.createElement('textarea');
+        textarea.rows = "5";
+        return textarea;
     }
 
     const createInput = (id, type, name, placeholder, labelText) => {
@@ -133,8 +135,8 @@ const view = (() => {
 
     const createProjectDialog = (functionName) => {
         const [dialog, form, buttons] = createDialogWithForm(functionName);
-        const [,titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
-        const [, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
+        const [,titleInput, titleRow] = createInput('project-title', 'text', 'title', 'Title', 'Title');
+        const [,, descriptionRow] = createInput('project-description', 'text', 'description', 'Description', 'Description');
 
         const errorMessage = getTitleError();
 
@@ -150,7 +152,7 @@ const view = (() => {
         const [dialog, form, buttons] = createDialogWithForm(functionName);
         const [, titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
         const [,, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
-        const [,, dateRow] = createInput('todo-due-date', 'date', 'date', '01/01/2030', 'Due date:');
+        const [,, dateRow] = createInput('todo-due-date', 'date', 'date', '01/01/2030', 'Due date');
         const priorityText = document.createElement('div');
         priorityText.textContent = 'Priority:';
         priorityText.classList.add('dialog-row');
@@ -164,14 +166,17 @@ const view = (() => {
 
         lowPriorityInput.checked = true;
 
+        const priorityContainer = document.createElement('div');
+        priorityContainer.classList.add('priority-container');
+
         const errorMessage = getTitleError();
 
         titleInput.addEventListener('change', () => {
             errorMessage.style.visibility = 'hidden';
         });
 
-        appendChildren(form, [titleRow, errorMessage, descriptionRow, dateRow, priorityText, 
-            lowPriorityRow, mediumPriorityRow, highPriorityRow, buttons]);
+        appendChildren(priorityContainer, [priorityText, lowPriorityRow, mediumPriorityRow, highPriorityRow]);
+        appendChildren(form, [titleRow, errorMessage, descriptionRow, dateRow, priorityContainer, buttons]);
 
 
         return [dialog, form, buttons, errorMessage];
@@ -315,6 +320,7 @@ const view = (() => {
 
         const inProgressButton = document.createElement('button');
         inProgressButton.classList.add('in-progress-button');
+        inProgressButton.classList.add('active');
         inProgressButton.textContent = 'In progress';
 
         inProgressButton.addEventListener('click', () => {
@@ -365,7 +371,9 @@ const view = (() => {
     const createProject = (title, description) => {
         const contentContainer = document.createElement('div');
         contentContainer.classList.add('project-container');
-        appendChildren(contentContainer, [createProjectHeader(title, description), createTodosContainer()]);
+        const gradient = document.createElement('div');
+        gradient.classList.add('gradient');
+        appendChildren(contentContainer, [createProjectHeader(title, description), gradient, createTodosContainer()]);
         return contentContainer;
     }
 
@@ -394,7 +402,7 @@ const view = (() => {
         }
 
         const priorityContainer = document.createElement('div');
-        priorityContainer.classList.add('card-priority');
+        priorityContainer.setAttribute('class', `card-priority ${todo.priority}`);
         priorityContainer.textContent = `Priority: ${todo.priority}`;
 
         const dueDateContainer = document.createElement('div');
@@ -413,7 +421,7 @@ const view = (() => {
         editButton.textContent = "Edit";
 
         completeButton.addEventListener('click', (event) => {
-            event.stopPropagation()
+            event.stopPropagation();
             if(todo.isCompleted == false){
                 completeButton.textContent = 'Completed!';
             }
@@ -425,8 +433,9 @@ const view = (() => {
             eventFunctions.get('change-todo-completion')(todo.id);
         })
 
-        editButton.addEventListener('click', () => {
+        editButton.addEventListener('click', (event) => {
             displayEditTodoDialog(todo);
+            event.stopPropagation();
         });
 
         appendChildren(buttons, [completeButton, editButton]);
@@ -436,14 +445,10 @@ const view = (() => {
             if(card.classList.contains('rolled')){
                 card.classList.remove('rolled');
                 card.classList.add('unrolled');
-                card.insertBefore(descriptionContainer, priorityContainer);
-                card.insertBefore(dueDateContainer, buttons);
             }
             else if(card.classList.contains('unrolled')){
                 card.classList.remove('unrolled');
                 card.classList.add('rolled');
-                card.removeChild(descriptionContainer);
-                card.removeChild(dueDateContainer);
             }
         });
 
@@ -453,7 +458,9 @@ const view = (() => {
     const updateTodo = (id, title, description, priority, dueDate) => {
         document.querySelector(`.todo-card[id="${id}"] > .card-title`).textContent = title;
         document.querySelector(`.todo-card[id="${id}"] > .card-description`).textContent = description;
-        document.querySelector(`.todo-card[id="${id}"] > .card-priority`).textContent = `Priority: ${priority}`;
+        const priorityContainer = document.querySelector(`.todo-card[id="${id}"] > .card-priority`);
+        priorityContainer.textContent = `Priority: ${priority}`;
+        priorityContainer.setAttribute('class', `card-priority ${priority}`);
         const dueDateText = document.querySelector(`.todo-card[id="${id}"] > .card-due-date`);
         dueDateText.textContent = dueDate != '' ? `Due: ${dueDate}` : '';
     }
