@@ -88,7 +88,9 @@ const view = (() => {
     }
 
     const getTextArea = () => {
-        return document.createElement('textarea');
+        const textarea = document.createElement('textarea');
+        textarea.rows = "5";
+        return textarea;
     }
 
     const createInput = (id, type, name, placeholder, labelText) => {
@@ -133,8 +135,8 @@ const view = (() => {
 
     const createProjectDialog = (functionName) => {
         const [dialog, form, buttons] = createDialogWithForm(functionName);
-        const [,titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
-        const [, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
+        const [,titleInput, titleRow] = createInput('project-title', 'text', 'title', 'Title', 'Title');
+        const [,, descriptionRow] = createInput('project-description', 'text', 'description', 'Description', 'Description');
 
         const errorMessage = getTitleError();
 
@@ -150,7 +152,7 @@ const view = (() => {
         const [dialog, form, buttons] = createDialogWithForm(functionName);
         const [, titleInput, titleRow] = createInput('todo-title', 'text', 'title', 'Title', 'Title');
         const [,, descriptionRow] = createInput('todo-description', 'text', 'description', 'Description', 'Description');
-        const [,, dateRow] = createInput('todo-due-date', 'date', 'date', '01/01/2030', 'Due date:');
+        const [,, dateRow] = createInput('todo-due-date', 'date', 'date', '01/01/2030', 'Due date');
         const priorityText = document.createElement('div');
         priorityText.textContent = 'Priority:';
         priorityText.classList.add('dialog-row');
@@ -164,14 +166,17 @@ const view = (() => {
 
         lowPriorityInput.checked = true;
 
+        const priorityContainer = document.createElement('div');
+        priorityContainer.classList.add('priority-container');
+
         const errorMessage = getTitleError();
 
         titleInput.addEventListener('change', () => {
             errorMessage.style.visibility = 'hidden';
         });
 
-        appendChildren(form, [titleRow, errorMessage, descriptionRow, dateRow, priorityText, 
-            lowPriorityRow, mediumPriorityRow, highPriorityRow, buttons]);
+        appendChildren(priorityContainer, [priorityText, lowPriorityRow, mediumPriorityRow, highPriorityRow]);
+        appendChildren(form, [titleRow, errorMessage, descriptionRow, dateRow, priorityContainer, buttons]);
 
 
         return [dialog, form, buttons, errorMessage];

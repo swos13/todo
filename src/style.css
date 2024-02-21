@@ -267,15 +267,103 @@ body {
     background-color: var(--grey-color);
 }
 
+.add-todo-dialog, .edit-todo-dialog, .add-project-dialog, .edit-project-dialog {
+    background-color: var(--white-color);
+    border: 2px solid;
+    border-color: var(--darker-violet-color);
+    border-radius: 8px;
+}
+
+.dialog-name {
+    font: 700 1.2rem Montserrat, Helvetica, sans-serif;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+form > .dialog-row {
+    display: flex;
+    flex-direction: column;
+}
+
+form > .dialog-row:not(.dialog-row:first-of-type){
+    margin-bottom: 16px;
+}
+
+.dialog-row, .error {
+    font: 500 1rem Montserrat, Helvetica, sans-serif;
+}
+
+.dialog-row > label {
+    margin-bottom: 4px;
+}
+
+.dialog-row > textarea {
+    resize: none;
+}
+
+.dialog-row > input, .dialog-row > textarea {
+    padding: 4px;
+    border-radius: 8px;
+    border: 2px solid;
+    border-color: var(--violet-color);
+}
+
+.dialog-row > input:focus, .dialog-row > textarea:focus {
+    border-color: var(--darker-violet-color);
+}
+
 .error {
     color: red;
 }
 
-/*.project-buttons-container {
-    display: flex;
+.priority-container {
+    margin-bottom: 16px;
+    display: grid;
+    align-items: center;
 }
 
-.edit-project-button {
-    margin-left: auto;
+.priority-container > .dialog-row:first-of-type {
+    font-weight: 600;
+    margin-bottom: 8px;
 }
-*/
+
+.priority-container > .dialog-row:not(.dialog-row:first-of-type) {
+    font-weight: 400;
+    margin-bottom: 4px;
+}
+
+.dialog-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+}
+
+.dialog-buttons > button {
+    flex: 1;
+    padding: 0.5rem;
+    font: 700 1rem Montserrat, Helvetica, sans-serif;
+    border: 2px solid;
+    border-radius: 8px;
+}
+
+.dialog-buttons > .add-button, .dialog-buttons > .save-button {
+    color: white;
+    background-color: var(--green-color);
+    border-color: var(--green-color);
+}
+
+.dialog-buttons > .add-button:active, .dialog-buttons > .save-button:active {
+    color: var(--grey-color);
+    background-color: var(--darker-green-color);
+}
+
+.dialog-buttons > .cancel-button {
+    color: var(--violet-color);
+    background-color: var(--white-color);
+    border-color: var(--violet-color);
+}
+
+.dialog-buttons > .cancel-button:active {
+    color: var(--darker-violet-color);
+    background-color: var(--grey-color);
+}
