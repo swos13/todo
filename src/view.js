@@ -210,6 +210,42 @@ const view = (() => {
         createAddDialogElements(dialog, form, buttons, errorMessage, 'add-todo');
     }
 
+    const createConfirmDeleteDialog = (editDialog, todo) => {
+        const confirmText = document.createElement('p');
+        confirmText.textContent = "Are you sure you want to delete this todo?";
+        const yesButton = document.createElement('button');
+        yesButton.textContent = 'Yes';
+        yesButton.classList.add('yes-button');
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.classList.add('cancel-button');
+
+        const buttons = document.createElement('div');
+        buttons.classList.add('confirm-buttons');
+        appendChildren(buttons, [yesButton, cancelButton]);
+
+        yesButton.addEventListener('click', () => {
+            eventFunctions.get('delete-todo')(todo);
+            dialog.close();
+            editDialog.close();
+        });
+
+        cancelButton.addEventListener('click', () => {
+            dialog.close();
+        });
+
+        const dialog = document.createElement('dialog');
+        dialog.classList.add(`delete-todo-dialog`);
+        dialog.addEventListener('close', () => {
+            body.removeChild(dialog);
+        });
+
+        appendChildren(dialog, [confirmText, buttons]);
+
+        body.appendChild(dialog);
+        dialog.showModal();
+    }
+
     const displayEditTodoDialog = (todo) => {
         const [dialog, form, buttons, errorMessage] = createTodoDialog('Edit Todo');
         const saveButton = document.createElement('button');
@@ -218,6 +254,9 @@ const view = (() => {
         const cancelButton = document.createElement('button');
         cancelButton.textContent = 'Cancel';
         cancelButton.classList.add('cancel-button');
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('delete-button');
 
         form.title.value = todo.title;
         form.description.value = todo.description;
@@ -234,7 +273,11 @@ const view = (() => {
             dialog.close();
         });
 
-        appendChildren(buttons, [saveButton, cancelButton]);
+        deleteButton.addEventListener('click', () => {
+            createConfirmDeleteDialog(dialog, todo);
+        })
+
+        appendChildren(buttons, [saveButton, deleteButton, cancelButton]);
 
         dialog.appendChild(form);
         body.appendChild(dialog);
@@ -469,6 +512,11 @@ const view = (() => {
         dueDateText.textContent = dueDate != '' ? `Due: ${dueDate}` : '';
     }
 
+    const deleteTodoCard = (id) => {
+        const todoCard = document.querySelector(`.todo-card[id="${id}"]`);
+        todoCard.parentNode.removeChild(todoCard);
+    }
+
     const addTodoToContainer = (todoCard, container) => {
         container.appendChild(todoCard);
     }
@@ -481,7 +529,7 @@ const view = (() => {
     return { setUp, createSidebar, getProjectsContainer, addProjectToContainer, changeContent,
             setEventFunctions, createProject, updateProject,
             getTodosContainer, createTodoCard, 
-            updateTodo, addTodoToContainer }
+            updateTodo, deleteTodoCard, addTodoToContainer }
 })();
 
 export default view;
