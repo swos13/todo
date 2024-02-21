@@ -236,11 +236,11 @@ body {
     border-color: var(--red-color);
 }
 
-.todo-card.rolled > .card-description, .todo-card.rolled > .card-due-date {
+.todo-card.rolled > .card-description, .todo-card.rolled > .card-priority {
     display: none;
 }
 
-.todo-card.unrolled > .card-description, .todo-card.unrolled > .card-due-date {
+.todo-card.unrolled > .card-description, .todo-card.unrolled > .card-priority {
     display: block;
 }
 
