@@ -417,6 +417,8 @@ const view = (() => {
 
         const completeButton = document.createElement('button');
         completeButton.textContent = todo.isCompleted == true ? "Completed!" : "Complete";
+        const buttonClass = todo.isCompleted == true ? "completed" : "incomplete";
+        completeButton.setAttribute('class', buttonClass);
         const editButton = document.createElement('button');
         editButton.textContent = "Edit";
 
@@ -424,9 +426,11 @@ const view = (() => {
             event.stopPropagation();
             if(todo.isCompleted == false){
                 completeButton.textContent = 'Completed!';
+                completeButton.setAttribute('class', 'completed');
             }
             else{
                 completeButton.textContent = 'Complete';
+                completeButton.setAttribute('class', 'incomplete');
             }
             if(!todosCardsContainer.classList.contains('all'))
                 todosCardsContainer.removeChild(card);
