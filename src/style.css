@@ -13,6 +13,7 @@
     --darker-violet-color: #664796;
     --yellow-color: #d1b537;
     --red-color: #e03939;
+    --darker-red-color: #a52828;
 }
 
 body {
@@ -236,11 +237,11 @@ body {
     border-color: var(--red-color);
 }
 
-.todo-card.rolled > .card-description, .todo-card.rolled > .card-due-date {
+.todo-card.rolled > .card-description, .todo-card.rolled > .card-priority {
     display: none;
 }
 
-.todo-card.unrolled > .card-description, .todo-card.unrolled > .card-due-date {
+.todo-card.unrolled > .card-description, .todo-card.unrolled > .card-priority {
     display: block;
 }
 
@@ -255,7 +256,7 @@ body {
     font-weight: 600;
     color: var(--violet-color);
     background-color: var(--white-color);
-    width: 50%;
+    flex: 1;
     padding: 0.2rem;
     border: 2px solid;
     border-color: var(--violet-color);
@@ -267,7 +268,13 @@ body {
     background-color: var(--grey-color);
 }
 
-.add-todo-dialog, .edit-todo-dialog, .add-project-dialog, .edit-project-dialog {
+.card-buttons > .completed {
+    color: var(--white-color);
+    background-color: var(--green-color);
+}
+
+.add-todo-dialog, .edit-todo-dialog, .add-project-dialog, .edit-project-dialog, .delete-todo-dialog {
+    width: 320px;
     background-color: var(--white-color);
     border: 2px solid;
     border-color: var(--darker-violet-color);
@@ -285,7 +292,7 @@ form > .dialog-row {
     flex-direction: column;
 }
 
-form > .dialog-row:not(.dialog-row:first-of-type){
+form > .dialog-row:not(.dialog-row:first-of-type) {
     margin-bottom: 16px;
 }
 
@@ -366,4 +373,37 @@ form > .dialog-row:not(.dialog-row:first-of-type){
 .dialog-buttons > .cancel-button:active {
     color: var(--darker-violet-color);
     background-color: var(--grey-color);
+}
+
+.dialog-buttons > .delete-button {
+    color: var(--white-color);
+    background-color: var(--red-color);
+    border-color: var(--red-color);
+}
+
+.dialog-buttons > .delete-button:active {
+    color: var(--grey-color);
+    background-color: var(--darker-red-color);
+}
+
+.delete-todo-dialog {
+    width: 200px;
+}
+
+.delete-todo-dialog > p {
+    margin-top: 0;
+    font: 500 1rem Montserrat, Helvetica, sans-serif;
+    text-align: center;
+}
+
+.confirm-buttons { 
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.confirm-buttons > button {
+    flex: 1;
+    font: 500 0.8rem Montserrat, Helvetica, sans-serif;
+    padding: 0.2rem;
 }

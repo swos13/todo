@@ -15,6 +15,7 @@ const controller = (() => {
         const eventFunctions = new Map();
         eventFunctions.set('add-todo', createTodo);
         eventFunctions.set('edit-todo', editTodo);
+        eventFunctions.set('delete-todo', deleteTodo);
         eventFunctions.set('change-todo-completion', changeTodoCompletion);
         eventFunctions.set('add-project', createProject);
         eventFunctions.set('edit-project', editProject);
@@ -40,6 +41,10 @@ const controller = (() => {
         view.updateTodo(form.id, form.title.value, form.description.value, form.priority.value, form.date.value);
         model.updateTodo(model.getCurrentProject().todos.get(parseInt(form.id)), form.title.value, form.description.value, form.priority.value, form.date.value);
         console.log(model.getCurrentProject().todos.get(parseInt(form.id)));
+    }
+    const deleteTodo = (todo) => {
+        model.deleteTodo(todo.id);
+        view.deleteTodoCard(todo.id);
     }
     const createProject = (form) => {
         const newProject = model.createProject(form.title.value, form.description.value);
