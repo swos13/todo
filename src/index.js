@@ -1,15 +1,31 @@
 import model from "./model.js";
 import view from "./view.js";
+import storage from "./storage.js";
 import './style.css';
 
 const controller = (() => {
     const start = () => {
-        const project = createDefaultProject();
+        const project = getCurrentProject();
         view.setUp(model.getProjects(), project.title, project.description);
         setEventFunctions();
         const todo = model.createTodo("moje todo do zrobienia", "to jest moje todo, ktore musze kiedys zrobic", "low", "2019-03-22");
         const todoCard = view.createTodoCard(todo);
         view.addTodoToContainer(todoCard, view.getTodosContainer());
+    }
+    const getCurrentProject = () => {
+        let project;
+        if(storage.isAvailable()){
+            const response = storage.getFromStorage('currentProject');
+            if(!response)
+                project = createDefaultProject();
+            else{
+                project = response;
+            }
+        }
+        else{
+            project = createDefaultProject();
+        }
+        return project;
     }
     const setEventFunctions = () => {
         const eventFunctions = new Map();
@@ -58,6 +74,7 @@ const controller = (() => {
         model.setCurrentProject(projectId);
         const newCurrentProject = model.getProjects().get(projectId);
         view.changeContent(view.createProject(newCurrentProject.title, newCurrentProject.description));
+        storage.putInStorage('currentProject', newCurrentProject);
         showTodos('in-progress');
     }
     const showTodos = (type) => {
