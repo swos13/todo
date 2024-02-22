@@ -3,8 +3,8 @@ import Todo from './classes/Todo.js';
 
 const model = (() => {
 
-    let currentProject = new Project("My Project","Description of My Project");
-    const projects = new Map();
+    let currentProject;
+    let projects;
 
     const createProject = (title, description) => {
         const project = new Project(title, description);
@@ -16,6 +16,9 @@ const model = (() => {
     }
     const deleteProject = (projectId) => {
         projects.delete(projectId);
+    }
+    const setProjects = (allProjects) => {
+        projects = allProjects;
     }
     const getProjects = () => {
         return projects;
@@ -38,7 +41,7 @@ const model = (() => {
         currentProject.removeTodo(todoId);
     }
     
-    return { createProject, updateProject, deleteProject, getProjects, getCurrentProject, setCurrentProject, createTodo, updateTodo, deleteTodo }
+    return { createProject, updateProject, deleteProject, setProjects, getProjects, getCurrentProject, setCurrentProject, createTodo, updateTodo, deleteTodo }
 })();
 
 export default model;
