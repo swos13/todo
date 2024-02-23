@@ -31,7 +31,6 @@ const model = (() => {
     }
     const createTodo = (title, description, priority, dueDate) => {
         const todo = new Todo(title, description, priority, dueDate);
-        console.log(currentProject);
         currentProject.addTodo(todo);
         return todo;
     }

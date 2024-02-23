@@ -82,10 +82,8 @@ const storage = (() => {
     const getProjects = () => {
         const projects = getItem('projects');
         projects.forEach((project) => {
-            console.log(project);
             project[1] = new Project('','',true).loadData(project[1]);
             convertObjectsToTodo(project[1]);
-            console.log(project[1]);
         })
         return new Map(projects);
     }
