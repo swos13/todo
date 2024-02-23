@@ -2,10 +2,12 @@ export default class Project {
 
     static ids = 1; 
 
-    constructor (title, description){
-        this.setProperties(title, description);
-        this.todos = new Map();
-        this.id = Project.ids++;
+    constructor (title, description, load = false){
+        if(!load){
+            this.id = Project.ids++;
+            this.setProperties(title, description);
+            this.todos = new Map();
+        }
     }
 
     setProperties(title, description){
@@ -19,5 +21,13 @@ export default class Project {
 
     removeTodo(id){
         this.todos.delete(id);
+    }
+
+    loadData({id, title, description, todos}){
+        this.setProperties(title, description);
+        this.todos = new Map(todos);
+        this.id = id;
+        console.log(this);
+        return this;
     }
 }

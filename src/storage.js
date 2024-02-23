@@ -1,3 +1,6 @@
+import Project from './classes/Project.js';
+import Todo from './classes/Todo.js';
+
 const storage = (() => {
 
     let localStorage = window['localStorage'];
@@ -29,23 +32,65 @@ const storage = (() => {
         return JSON.parse(localStorage.getItem(name));
     }
 
+    const setProjectId = (id) => {
+        setItem('projectId', id);
+    }
+
+    const getProjectId = () => {
+        return getItem('projectId');
+    }
+
+    const setTodoId = (id) => {
+        setItem('todoId', id);
+    }
+
+    const getTodoId = () => {
+        return getItem('todoId');
+    }
+
     const setCurrentProject = (currentProject) => {
+        currentProject.todos = Array.from(currentProject.todos);
         setItem('currentProject', currentProject);
+        currentProject.todos = new Map(currentProject.todos);
     }
 
     const getCurrentProject = () => {
-        return getItem('currentProject');
+        let currentProject = getItem('currentProject');
+        currentProject = new Project('','',true).loadData(currentProject);
+        convertObjectsToTodo(currentProject);
+        return currentProject;
+    }
+
+    const convertObjectsToTodo = (project) => {
+        project.todos.forEach((todo) =>  {
+            todo = new Todo('','','','', true).loadData(todo);
+        });
     }
 
     const setProjects = (projects) => {
-        setItem('projects', Array.from(projects.entries()));
+        let arrayOfProjects = Array.from(projects);
+        arrayOfProjects.forEach((project) => {
+          project[1].todos = Array.from(project[1].todos);
+        });
+        arrayOfProjects = Array.from(arrayOfProjects);
+        setItem('projects', arrayOfProjects);
+        arrayOfProjects.forEach((project) => {
+            project[1].todos = new Map(project[1].todos);
+        })
     }
 
     const getProjects = () => {
-       return new Map(getItem('projects'));
+        const projects = getItem('projects');
+        projects.forEach((project) => {
+            console.log(project);
+            project[1] = new Project('','',true).loadData(project[1]);
+            convertObjectsToTodo(project[1]);
+            console.log(project[1]);
+        })
+        return new Map(projects);
     }
 
-    return { isAvailable, setCurrentProject, getCurrentProject, setProjects, getProjects }
+    return { isAvailable, setProjectId, getProjectId, setTodoId, getTodoId, setCurrentProject, getCurrentProject, setProjects, getProjects }
 })();
 
 export default storage;

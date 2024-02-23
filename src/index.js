@@ -6,21 +6,30 @@ import './style.css';
 const controller = (() => {
     const start = () => {
         setEventFunctions();
-        model.setProjects(storage.get);
         const project = getCurrentProject();
         view.setUp(model.getProjects(), project.title, project.description);
         setProject(project.id);
     }
     const saveData = () => {
-        console.log(model.getProjects());
         storage.setProjects(model.getProjects());
         storage.setCurrentProject(model.getCurrentProject());
-        console.log(storage.getProjects());
     }
     const getCurrentProject = () => {
         let project;
         if(storage.isAvailable()){ //
-            let response = storage.getProjects();
+            let response = storage.getProjectId();
+            if(!response){
+            }
+            else{
+               model.setProjectId(response);
+            }
+            response = storage.getTodoId();
+            if(!response){
+            }
+            else{
+                model.setTodoId(response);
+            }
+            response = storage.getProjects();
             if(!response){
                 model.setProjects(new Map());
             }
@@ -70,6 +79,7 @@ const controller = (() => {
         const todo = model.createTodo(form.title.value, form.description.value, form.priority.value, form.date.value);
         addTodoToView(todo);
         saveData();
+        storage.setTodoId(model.getTodoId());
     }
     const editTodo = (form) => {
         view.updateTodo(form.id, form.title.value, form.description.value, form.priority.value, form.date.value);
@@ -85,6 +95,7 @@ const controller = (() => {
         const newProject = model.createProject(form.title.value, form.description.value);
         storage.setProjects(model.getProjects());
         view.addProjectToContainer(newProject, view.getProjectsContainer());
+        storage.setProjectId(model.getProjectId());
     }
     const editProject = (form) => {
         view.updateProject(form.title.value, form.description.value);

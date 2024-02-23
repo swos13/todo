@@ -31,6 +31,7 @@ const model = (() => {
     }
     const createTodo = (title, description, priority, dueDate) => {
         const todo = new Todo(title, description, priority, dueDate);
+        console.log(currentProject);
         currentProject.addTodo(todo);
         return todo;
     }
@@ -40,8 +41,21 @@ const model = (() => {
     const deleteTodo = (todoId) => {
         currentProject.removeTodo(todoId);
     }
+    const getProjectId = () => {
+        return Project.ids;
+    }
+    const setProjectId = (id) => {
+        Project.ids = id;
+    }
+    const getTodoId = () => {
+        return Todo.ids;
+    }
+    const setTodoId = (id) => {
+        Todo.ids = id;
+    }
     
-    return { createProject, updateProject, deleteProject, setProjects, getProjects, getCurrentProject, setCurrentProject, createTodo, updateTodo, deleteTodo }
+    return { createProject, updateProject, deleteProject, setProjects, getProjects, getCurrentProject, setCurrentProject, createTodo, updateTodo, deleteTodo, 
+            getProjectId, setProjectId, getTodoId, setTodoId}
 })();
 
 export default model;
