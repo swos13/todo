@@ -29,7 +29,6 @@ export default class Todo {
         this.setProperties(title, description, priority, dueDate);
         this.isCompleted = isCompleted;
         this.id = id;
-        console.log(this);
         return this;
     }
 }

@@ -27,7 +27,6 @@ export default class Project {
         this.setProperties(title, description);
         this.todos = new Map(todos);
         this.id = id;
-        console.log(this);
         return this;
     }
 }
