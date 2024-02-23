@@ -2,10 +2,12 @@ export default class Todo {
 
     static ids = 1;
 
-    constructor(title, description = '', priority, dueDate){
-        this.setProperties(title, description, priority, dueDate);
-        this.isCompleted = false;
-        this.id = Todo.ids++;
+    constructor(title, description = '', priority, dueDate, load = false){
+        if(!load){
+            this.setProperties(title, description, priority, dueDate);
+            this.isCompleted = false;
+            this.id = Todo.ids++;
+        }
     }
 
     setProperties(title, description, priority, dueDate) {
@@ -21,5 +23,13 @@ export default class Todo {
         else
             this.isCompleted = false;
         return this.isCompleted;
+    }
+
+    loadData({title, description, priority, dueDate, isCompleted, id}){
+        this.setProperties(title, description, priority, dueDate);
+        this.isCompleted = isCompleted;
+        this.id = id;
+        console.log(this);
+        return this;
     }
 }

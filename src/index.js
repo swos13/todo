@@ -1,15 +1,58 @@
 import model from "./model.js";
 import view from "./view.js";
+import storage from "./storage.js";
 import './style.css';
 
 const controller = (() => {
     const start = () => {
-        const project = createDefaultProject();
-        view.setUp(model.getProjects(), project.title, project.description);
         setEventFunctions();
-        const todo = model.createTodo("moje todo do zrobienia", "to jest moje todo, ktore musze kiedys zrobic", "low", "2019-03-22");
-        const todoCard = view.createTodoCard(todo);
-        view.addTodoToContainer(todoCard, view.getTodosContainer());
+        const project = getCurrentProject();
+        view.setUp(model.getProjects(), project.title, project.description);
+        setProject(project.id);
+    }
+    const saveData = () => {
+        storage.setProjects(model.getProjects());
+        storage.setCurrentProject(model.getCurrentProject());
+    }
+    const getCurrentProject = () => {
+        let project;
+        if(storage.isAvailable()){ //
+            let response = storage.getProjectId();
+            if(!response){
+            }
+            else{
+               model.setProjectId(response);
+            }
+            response = storage.getTodoId();
+            if(!response){
+            }
+            else{
+                model.setTodoId(response);
+            }
+            response = storage.getProjects();
+            if(!response){
+                model.setProjects(new Map());
+            }
+            else{
+                model.setProjects(response);
+            }
+            response = storage.getCurrentProject();
+            if(!response)
+                project = createDefaultProject();
+            else{
+                project = response;
+            }
+            model.setCurrentProject(project.id);
+            
+        }
+        else{
+            model.setProjects(new Map());
+            project = createDefaultProject();
+            model.setCurrentProject(project.id);
+            model.createTodo("My Todo","This is my todo I have to complete for this project", "high", "2024-06-30");
+            saveData();
+        }
+        return project;
     }
     const setEventFunctions = () => {
         const eventFunctions = new Map();
@@ -25,7 +68,6 @@ const controller = (() => {
     }
     const createDefaultProject = () => {
         const project = model.createProject("my project", "this is my project that I have to complete");
-        model.setCurrentProject(project.id);
         return project;
     }
     const addTodoToView = (todo) => {
@@ -36,28 +78,35 @@ const controller = (() => {
     const createTodo = (form) => {
         const todo = model.createTodo(form.title.value, form.description.value, form.priority.value, form.date.value);
         addTodoToView(todo);
+        saveData();
+        storage.setTodoId(model.getTodoId());
     }
     const editTodo = (form) => {
         view.updateTodo(form.id, form.title.value, form.description.value, form.priority.value, form.date.value);
         model.updateTodo(model.getCurrentProject().todos.get(parseInt(form.id)), form.title.value, form.description.value, form.priority.value, form.date.value);
-        console.log(model.getCurrentProject().todos.get(parseInt(form.id)));
+        saveData();
     }
     const deleteTodo = (todo) => {
         model.deleteTodo(todo.id);
         view.deleteTodoCard(todo.id);
+        saveData();
     }
     const createProject = (form) => {
         const newProject = model.createProject(form.title.value, form.description.value);
+        storage.setProjects(model.getProjects());
         view.addProjectToContainer(newProject, view.getProjectsContainer());
+        storage.setProjectId(model.getProjectId());
     }
     const editProject = (form) => {
         view.updateProject(form.title.value, form.description.value);
         model.updateProject(model.getCurrentProject(), form.title.value, form.description.value);
+        saveData();
     }
     const setProject = (projectId) => {
         model.setCurrentProject(projectId);
         const newCurrentProject = model.getProjects().get(projectId);
         view.changeContent(view.createProject(newCurrentProject.title, newCurrentProject.description));
+        storage.setCurrentProject(newCurrentProject);
         showTodos('in-progress');
     }
     const showTodos = (type) => {
