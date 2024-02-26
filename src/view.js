@@ -199,9 +199,9 @@ const view = (() => {
         createAddDialogElements(dialog, form, buttons, errorMessage, 'add-todo');
     }
 
-    const createConfirmDeleteDialog = (editDialog, todo) => {
+    const createConfirmDeleteDialog = (editDialog, objectString, object) => {
         const confirmText = document.createElement('p');
-        confirmText.textContent = "Are you sure you want to delete this todo?";
+        confirmText.textContent = `Are you sure you want to delete this ${objectString}?`;
         const yesButton = document.createElement('button');
         yesButton.textContent = 'Yes';
         yesButton.classList.add('yes-button');
@@ -214,9 +214,10 @@ const view = (() => {
         appendChildren(buttons, [yesButton, cancelButton]);
 
         yesButton.addEventListener('click', () => {
-            eventFunctions.get('delete-todo')(todo);
+            eventFunctions.get(`delete-${objectString}`)(object);
             dialog.close();
-            editDialog.close();
+            if(editDialog != null)
+                editDialog.close();
         });
 
         cancelButton.addEventListener('click', () => {
@@ -224,7 +225,7 @@ const view = (() => {
         });
 
         const dialog = document.createElement('dialog');
-        dialog.classList.add(`delete-todo-dialog`);
+        dialog.classList.add(`delete-${objectString}-dialog`);
         dialog.addEventListener('close', () => {
             body.removeChild(dialog);
         });
