@@ -78,10 +78,6 @@ body {
     padding-right: 24px;
 }
 
-.project-link:hover {
-    color: var(--grey-color);
-}
-
 .project-container {
     grid-column: 2 / 3;
     display: grid;
@@ -273,7 +269,7 @@ body {
     background-color: var(--green-color);
 }
 
-.add-todo-dialog, .edit-todo-dialog, .add-project-dialog, .edit-project-dialog, .delete-todo-dialog {
+.add-todo-dialog, .edit-todo-dialog, .add-project-dialog, .edit-project-dialog, .delete-dialog {
     width: 320px;
     background-color: var(--white-color);
     border: 2px solid;
@@ -386,11 +382,11 @@ form > .dialog-row:not(.dialog-row:first-of-type) {
     background-color: var(--darker-red-color);
 }
 
-.delete-todo-dialog {
+.delete-dialog {
     width: 200px;
 }
 
-.delete-todo-dialog > p {
+.delete-dialog > p {
     margin-top: 0;
     font: 500 1rem Montserrat, Helvetica, sans-serif;
     text-align: center;
