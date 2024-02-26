@@ -4,16 +4,19 @@ import storage from "./storage.js";
 import './style.css';
 
 const controller = (() => {
+    
     const start = () => {
         setEventFunctions();
         const project = getCurrentProject();
         view.setUp(model.getProjects(), project);
         setProject(project.id);
     }
+
     const saveData = () => {
         storage.setProjects(model.getProjects());
         storage.setCurrentProject(model.getCurrentProject());
     }
+
     const getCurrentProject = () => {
         let project;
         if(storage.isAvailable()){
@@ -43,7 +46,6 @@ const controller = (() => {
                 project = response;
             }
             model.setCurrentProject(project.id);
-            
         }
         else{
             model.setProjects(new Map());
@@ -54,6 +56,7 @@ const controller = (() => {
         }
         return project;
     }
+
     const setEventFunctions = () => {
         const eventFunctions = new Map();
         eventFunctions.set('add-todo', createTodo);
@@ -68,42 +71,50 @@ const controller = (() => {
         eventFunctions.set('check-project-title', checkProjectTitle);
         view.setEventFunctions(eventFunctions);
     }
+
     const createDefaultProject = () => {
         const project = model.createProject("my project", "this is my project that I have to complete");
         return project;
     }
+
     const addTodoToView = (todo) => {
         const card = view.createTodoCard(todo);
         const container = view.getTodosContainer();
         view.addTodoToContainer(card, container);
     }
+
     const createTodo = (form) => {
         const todo = model.createTodo(form.title.value, form.description.value, form.priority.value, form.date.value);
         addTodoToView(todo);
         saveData();
         storage.setTodoId(model.getTodoId());
     }
+
     const editTodo = (form) => {
         view.updateTodo(form.id, form.title.value, form.description.value, form.priority.value, form.date.value);
         model.updateTodo(model.getCurrentProject().todos.get(parseInt(form.id)), form.title.value, form.description.value, form.priority.value, form.date.value);
         saveData();
     }
+
     const deleteTodo = (todo) => {
         model.deleteTodo(todo.id);
         view.deleteTodoCard(todo.id);
         saveData();
     }
+
     const createProject = (form) => {
         const newProject = model.createProject(form.title.value, form.description.value);
         storage.setProjects(model.getProjects());
         view.addProjectToContainer(newProject, view.getProjectsContainer());
         storage.setProjectId(model.getProjectId());
     }
+
     const editProject = (form) => {
         view.updateProject(form.title.value, form.description.value);
         model.updateProject(model.getCurrentProject(), form.title.value, form.description.value);
         saveData();
     }
+
     const deleteProject = (project) => {
         model.deleteProject(project.id);
         view.deleteProject(project.title);
@@ -111,6 +122,7 @@ const controller = (() => {
         setProject(newCurrentProjectId);
         saveData();
     }
+
     const setProject = (projectId) => {
         model.setCurrentProject(projectId);
         const newCurrentProject = model.getProjects().get(projectId);
@@ -118,6 +130,7 @@ const controller = (() => {
         storage.setCurrentProject(newCurrentProject);
         showTodos('in-progress');
     }
+
     const showTodos = (type) => {
         let todosArray = [];
         model.getCurrentProject().todos.forEach((todo) => {
@@ -133,13 +146,16 @@ const controller = (() => {
             addTodoToView(todo);
         })
     }
+
     const changeTodoCompletion = (id) => {
         const todo = model.getCurrentProject().todos.get(id) ;
         todo.isCompleted = todo.isCompleted == false ? true : false;
     }
+
     const checkProjectTitle = (title) => {
         return Array.from(model.getProjects()).map((project) => project[1].title).includes(title);
     }
+
     return { start }
 })();
 

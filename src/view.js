@@ -127,7 +127,6 @@ const view = (() => {
         const [dialog, form, buttons] = createDialogWithForm(functionName);
         const [,titleInput, titleRow] = createInput('project-title', 'text', 'title', 'Title', 'Title');
         const [,, descriptionRow] = createInput('project-description', 'text', 'description', 'Description', 'Description');
-
         const errorMessage = getTitleError();
 
         titleInput.addEventListener('change', () => {
