@@ -34,13 +34,6 @@ const view = (() => {
         addProjectButton.textContent = "Add project";
         addProjectButton.addEventListener('click', displayAddProjectDialog);
 
-        const allProjectsButton = document.createElement('button');
-        allProjectsButton.classList.add('all-projects-button');
-        allProjectsButton.textContent = "All projects";
-        allProjectsButton.addEventListener('click', () => {
-            displayAllProjects(projects);
-        });
-
         const yourProjectsText = document.createElement('div');
         yourProjectsText.classList.add('your-projects');
         yourProjectsText.textContent = "Your projects";
@@ -50,12 +43,8 @@ const view = (() => {
 
         projects.forEach(project => addProjectToContainer(project, projectsContainer));
 
-        appendChildren(sidebar, [addProjectButton, allProjectsButton, yourProjectsText, projectsContainer]);
+        appendChildren(sidebar, [addProjectButton, yourProjectsText, projectsContainer]);
         return sidebar;
-    }
-
-    const displayAllProjects = (projects) => {
-
     }
 
     const getTitleError = () => {
