@@ -7,7 +7,7 @@ const controller = (() => {
     const start = () => {
         setEventFunctions();
         const project = getCurrentProject();
-        view.setUp(model.getProjects(), project.title, project.description);
+        view.setUp(model.getProjects(), project);
         setProject(project.id);
     }
     const saveData = () => {
@@ -16,7 +16,7 @@ const controller = (() => {
     }
     const getCurrentProject = () => {
         let project;
-        if(storage.isAvailable()){ //
+        if(storage.isAvailable()){
             let response = storage.getProjectId();
             if(!response){
             }
@@ -62,8 +62,10 @@ const controller = (() => {
         eventFunctions.set('change-todo-completion', changeTodoCompletion);
         eventFunctions.set('add-project', createProject);
         eventFunctions.set('edit-project', editProject);
+        eventFunctions.set('delete-project', deleteProject);
         eventFunctions.set('set-project', setProject);
         eventFunctions.set('show-todos', showTodos);
+        eventFunctions.set('check-project-title', checkProjectTitle);
         view.setEventFunctions(eventFunctions);
     }
     const createDefaultProject = () => {
@@ -102,10 +104,17 @@ const controller = (() => {
         model.updateProject(model.getCurrentProject(), form.title.value, form.description.value);
         saveData();
     }
+    const deleteProject = (project) => {
+        model.deleteProject(project.id);
+        view.deleteProject(project.title);
+        const newCurrentProjectId = Math.min(...Array.from(model.getProjects()).map((project) => project[0]));
+        setProject(newCurrentProjectId);
+        saveData();
+    }
     const setProject = (projectId) => {
         model.setCurrentProject(projectId);
         const newCurrentProject = model.getProjects().get(projectId);
-        view.changeContent(view.createProject(newCurrentProject.title, newCurrentProject.description));
+        view.changeContent(view.createProject(newCurrentProject));
         storage.setCurrentProject(newCurrentProject);
         showTodos('in-progress');
     }
@@ -127,6 +136,9 @@ const controller = (() => {
     const changeTodoCompletion = (id) => {
         const todo = model.getCurrentProject().todos.get(id) ;
         todo.isCompleted = todo.isCompleted == false ? true : false;
+    }
+    const checkProjectTitle = (title) => {
+        return Array.from(model.getProjects()).map((project) => project[1].title).includes(title);
     }
     return { start }
 })();
