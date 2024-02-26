@@ -4,7 +4,7 @@ import storage from "./storage.js";
 import './style.css';
 
 const controller = (() => {
-    
+
     const start = () => {
         setEventFunctions();
         const project = getCurrentProject();
@@ -19,7 +19,7 @@ const controller = (() => {
 
     const getCurrentProject = () => {
         let project;
-        if(storage.isAvailable()){
+        if(false){ //storage.isAvailable()
             let response = storage.getProjectId();
             if(!response){
             }
